@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiniela semanal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      background: #ffd700;
+      color: #000;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    form {
+      background: #fff;
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+
+    .partido {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    select {
+      font-size: 16px;
+      padding: 4px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Formulario de Quiniela</h1>
+
+  <form id="quinielaForm">
+
+    <label>
+      Email:
+      <input type="email" id="email" required style="width:100%;margin:8px 0;">
+    </label>
+
+    <div id="partidos"></div>
+
+    <button type="submit">Enviar quiniela</button>
+  </form>
+
+  <script>
+    const partidosDiv = document.getElementById("partidos");
+
+    for (let i = 1; i <= 15; i++) {
+      const div = document.createElement("div");
+      div.className = "partido";
+
+      div.innerHTML = `
+        <label>Partido ${i}</label>
+        <select name="p${i}" required>
+          <option value="">--</option>
+          <option value="1">1</option>
+          <option value="X">X</option>
+          <option value="2">2</option>
+        </select>
+      `;
+
+      partidosDiv.appendChild(div);
+    }
+
+    document.getElementById("quinielaForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const data = {
+        email: document.getElementById("email").value,
+        pronosticos: {}
+      };
+
+      document.querySelectorAll("select").forEach(sel => {
+        data.pronosticos[sel.name] = sel.value;
+      });
+
+      console.log("Datos preparados:", data);
+      alert("Formulario enviado (por ahora solo en consola)");
+    });
+  </script>
+
+</body>
+</html>
