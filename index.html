@@ -28,6 +28,10 @@
       margin-top: 20px;
     }
 
+    .campo {
+      margin-bottom: 12px;
+    }
+
     .partido {
       display: flex;
       justify-content: space-between;
@@ -39,9 +43,9 @@
       font-weight: bold;
     }
 
-    select {
+    select, input {
       font-size: 16px;
-      padding: 4px;
+      padding: 6px;
     }
 
     button {
@@ -63,12 +67,42 @@
 
   <form id="quinielaForm">
 
-    <label>
-      Email:
-      <input type="email" id="email" required style="width:100%;margin:8px 0;">
-    </label>
+    <div class="campo">
+      <label>Nombre:</label><br>
+      <input type="text" id="nombre" required style="width:100%;">
+    </div>
+
+    <div class="campo">
+      <label>Email:</label><br>
+      <input type="email" id="email" required style="width:100%;">
+    </div>
+
+    <hr>
 
     <div id="partidos"></div>
+
+    <hr>
+
+    <h2>Partido 15 (Pleno al 15)</h2>
+
+    <div class="campo">
+      <label>¿Quién gana?</label><br>
+      <select id="plenoGanador" required>
+        <option value="">--</option>
+        <option value="local">Gana el local</option>
+        <option value="visitante">Gana el visitante</option>
+      </select>
+    </div>
+
+    <div class="campo">
+      <label>¿Por cuántos goles?</label><br>
+      <select id="plenoGoles" required>
+        <option value="">--</option>
+        <option value="1">Por 1 gol</option>
+        <option value="2">Por 2 goles</option>
+        <option value="3+">Por 3 o más goles</option>
+      </select>
+    </div>
 
     <button type="submit">Enviar quiniela</button>
   </form>
@@ -76,7 +110,8 @@
   <script>
     const partidosDiv = document.getElementById("partidos");
 
-    for (let i = 1; i <= 15; i++) {
+    // Partidos 1 al 14
+    for (let i = 1; i <= 14; i++) {
       const div = document.createElement("div");
       div.className = "partido";
 
@@ -97,16 +132,21 @@
       e.preventDefault();
 
       const data = {
+        nombre: document.getElementById("nombre").value,
         email: document.getElementById("email").value,
-        pronosticos: {}
+        pronosticos: {},
+        pleno15: {
+          ganador: document.getElementById("plenoGanador").value,
+          goles: document.getElementById("plenoGoles").value
+        }
       };
 
-      document.querySelectorAll("select").forEach(sel => {
+      document.querySelectorAll("select[name^='p']").forEach(sel => {
         data.pronosticos[sel.name] = sel.value;
       });
 
-      console.log("Datos preparados:", data);
-      alert("Formulario enviado (por ahora solo en consola)");
+      console.log("Quiniela enviada:", data);
+      alert("Quiniela enviada (por ahora solo en consola)");
     });
   </script>
 
