@@ -136,11 +136,11 @@
     document.getElementById("quinielaForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const data = {
-        pronosticos: {},
-        pleno15: {
-          ganador: document.getElementById("plenoGanador").value,
-          goles: document.getElementById("plenoGoles").value
+  const data = {
+  pronosticos: {},
+  pleno15: {
+    resultado: document.getElementById("plenoResultado").value,
+    goles: document.getElementById("plenoGoles").value
         }
       };
 
