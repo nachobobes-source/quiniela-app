@@ -2,31 +2,95 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Quiniela semanal</title>
+  <title>Quiniela del Grupo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    body { font-family: Arial; background:#f4f4f4; padding:20px; }
-    h1 { background:#ffd700; padding:12px; text-align:center; border-radius:6px; }
-    form, .resultado { background:#fff; padding:16px; border-radius:6px; margin-top:20px; }
-    .fila { display:flex; justify-content:space-between; margin-bottom:8px; }
-    .doble { color:#d63384; font-weight:bold; }
-    .pleno { margin-top:12px; padding:10px; background:#f8f9fa; border-radius:6px; }
-    button { width:100%; padding:12px; margin-top:16px; font-size:18px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    h1 {
+      background: #ffd700;
+      padding: 12px;
+      text-align: center;
+      border-radius: 6px;
+    }
+    select, button {
+      padding: 8px;
+      margin-top: 6px;
+      width: 100%;
+    }
+    .tabs button {
+      width: 32%;
+    }
+    .tab {
+      display: none;
+      background: #fff;
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 12px;
+    }
+    .tab.active {
+      display: block;
+    }
+    .fila {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .doble {
+      color: #d63384;
+      font-weight: bold;
+    }
+    .pleno {
+      margin-top: 12px;
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+    }
+    th {
+      background: #eee;
+    }
   </style>
 </head>
 
 <body>
 
-<h1>Quiniela semanal</h1>
+<h1>Quiniela del Grupo</h1>
 
-<form id="form">
+<!-- USUARIO -->
+<label>¿Quién eres?</label>
+<select id="usuario"></select>
+
+<!-- PESTAÑAS -->
+<div class="tabs">
+  <button onclick="mostrarTab('votar')">Votar</button>
+  <button onclick="mostrarTab('resultado')">Quiniela final</button>
+  <button onclick="mostrarTab('clasificacion')">Clasificación</button>
+</div>
+
+<!-- ================= TAB VOTAR ================= -->
+<div id="votar" class="tab active">
+  <h2>Votar quiniela</h2>
   <div id="partidos"></div>
 
-  <h2>Pleno al 15</h2>
+  <h3>Pleno al 15</h3>
 
   <label>Goles Local</label>
-  <select id="pl15_local" required>
+  <select id="pl15_local">
     <option value=""></option>
     <option value="0">0</option>
     <option value="1">1</option>
@@ -35,7 +99,7 @@
   </select>
 
   <label>Goles Visitante</label>
-  <select id="pl15_visitante" required>
+  <select id="pl15_visitante">
     <option value=""></option>
     <option value="0">0</option>
     <option value="1">1</option>
@@ -43,42 +107,71 @@
     <option value="M">M</option>
   </select>
 
-  <button type="submit">Enviar quiniela</button>
-</form>
+  <button onclick="enviarVoto()">Enviar quiniela</button>
+</div>
 
-<button id="verResultado">Ver quiniela final</button>
-<div id="resultado"></div>
+<!-- ================= TAB RESULTADO ================= -->
+<div id="resultado" class="tab">
+  <h2>Quiniela final</h2>
+  <div id="quinielaFinal"></div>
+</div>
+
+<!-- ================= TAB CLASIFICACIÓN ================= -->
+<div id="clasificacion" class="tab">
+  <h2>Clasificación</h2>
+  <div id="tablaClasificacion"></div>
+</div>
 
 <script>
-const SCRIPT_URL = "PEGA_AQUI_TU_URL";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyk5jP52iL_t8RRSeU_M5g-6qkJLyGTN1ZcL2He2Bcxbv4Unun5cwf5hkIveC5rTJuI/exec";
 
-/* ---------- CARGAR PARTIDOS ---------- */
-async function cargarPartidos() {
-  const res = await fetch(SCRIPT_URL + "?action=partidos");
-  const partidos = await res.json();
-  const div = document.getElementById("partidos");
-  div.innerHTML = "";
+/* ---------- UTIL ---------- */
+function mostrarTab(id) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 
-  partidos.forEach(p => {
-    div.innerHTML += `
-      <div class="fila">
-        <span>${p.nombre}</span>
-        <select name="p${p.id}" required>
-          <option value=""></option>
-          <option value="1">1</option>
-          <option value="X">X</option>
-          <option value="2">2</option>
-        </select>
-      </div>`;
-  });
+  if (id === "resultado") cargarResultado();
+  if (id === "clasificacion") cargarClasificacion();
 }
 
-cargarPartidos();
+/* ---------- CARGAR USUARIOS ---------- */
+fetch(SCRIPT_URL + "?action=usuarios")
+  .then(r => r.json())
+  .then(usuarios => {
+    const sel = document.getElementById("usuario");
+    usuarios.forEach(u => sel.innerHTML += `<option value="${u}">${u}</option>`);
+  });
 
-/* ---------- ENVÍO DE VOTO ---------- */
-document.getElementById("form").addEventListener("submit", async e => {
-  e.preventDefault();
+/* ---------- CARGAR PARTIDOS ---------- */
+fetch(SCRIPT_URL + "?action=partidos")
+  .then(r => r.json())
+  .then(partidos => {
+    const div = document.getElementById("partidos");
+    partidos.forEach(p => {
+      div.innerHTML += `
+        <div class="fila">
+          <span>${p.nombre}</span>
+          <select name="p${p.id}">
+            <option value=""></option>
+            <option value="1">1</option>
+            <option value="X">X</option>
+            <option value="2">2</option>
+          </select>
+        </div>`;
+    });
+  });
+
+/* ---------- ENVIAR VOTO ---------- */
+function enviarVoto() {
   const params = new URLSearchParams();
+  const user = document.getElementById("usuario").value;
+
+  if (!user) {
+    alert("Selecciona tu nombre");
+    return;
+  }
+
+  params.append("usuario", user);
 
   document.querySelectorAll("select[name^='p']")
     .forEach(s => params.append(s.name, s.value));
@@ -86,39 +179,44 @@ document.getElementById("form").addEventListener("submit", async e => {
   params.append("pl15_local", document.getElementById("pl15_local").value);
   params.append("pl15_visitante", document.getElementById("pl15_visitante").value);
 
-  const res = await fetch(https://script.google.com/macros/s/AKfycbxV4uLLm73iytjoMi5C67h5AnB2kMp3EdfNaHbLK5mMbFrxr0LOUrDw8J-QLD38ECit/exec + "?" + params.toString());
-  const txt = await res.text();
-  alert(txt === "OK" ? "✅ Voto registrado" : txt);
-});
+  fetch(SCRIPT_URL + "?" + params.toString())
+    .then(r => r.text())
+    .then(t => alert(t === "OK" ? "✅ Voto registrado" : t));
+}
 
-/* ---------- MOSTRAR RESULTADO FINAL ---------- */
-document.getElementById("verResultado").addEventListener("click", async () => {
-  const res = await fetch(SCRIPT_URL + "?action=resultado");
-  const data = await res.json();
+/* ---------- CARGAR RESULTADO FINAL ---------- */
+function cargarResultado() {
+  fetch(SCRIPT_URL + "?action=resultado")
+    .then(r => r.json())
+    .then(data => {
+      let html = "";
+      data.partidos.forEach(p => {
+        const esDoble = data.dobles.includes(p.partido);
+        html += `
+          <div class="fila">
+            <span>Partido ${p.partido}</span>
+            <span class="${esDoble ? "doble" : ""}">
+              ${esDoble ? `${p.principal} / ${p.segundo}` : p.principal}
+            </span>
+          </div>`;
+      });
+      document.getElementById("quinielaFinal").innerHTML = html;
+    });
+}
 
-  let html = `<div class="resultado"><h2>Quiniela final</h2>`;
-
-  data.partidos.forEach(p => {
-    const esDoble = data.dobles.includes(p.partido);
-    html += `
-      <div class="fila">
-        <span>${p.nombre}</span>
-        <span class="${esDoble ? "doble" : ""}">
-          ${esDoble ? `${p.principal} / ${p.segundo}` : p.principal}
-        </span>
-      </div>`;
-  });
-
-  html += `
-    <div class="pleno">
-      <strong>Pleno al 15</strong><br>
-      ${data.pleno15.local.nombre}: ${data.pleno15.local.goles}<br>
-      ${data.pleno15.visitante.nombre}: ${data.pleno15.visitante.goles}
-    </div>
-  </div>`;
-
-  document.getElementById("resultado").innerHTML = html;
-});
+/* ---------- CARGAR CLASIFICACIÓN ---------- */
+function cargarClasificacion() {
+  fetch(SCRIPT_URL + "?action=clasificacion")
+    .then(r => r.json())
+    .then(data => {
+      let html = "<table><tr><th>Usuario</th><th>Puntos</th></tr>";
+      data.slice(1).forEach(r => {
+        html += `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`;
+      });
+      html += "</table>";
+      document.getElementById("tablaClasificacion").innerHTML = html;
+    });
+}
 </script>
 
 </body>
