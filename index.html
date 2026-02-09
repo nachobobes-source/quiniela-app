@@ -24,18 +24,23 @@
   <div id="partidos"></div>
 
   <h2>Pleno al 15</h2>
-  <select id="plenoResultado" required>
-    <option value="">Resultado</option>
-    <option value="local">Local</option>
-    <option value="empate">Empate</option>
-    <option value="visitante">Visitante</option>
-  </select>
 
-  <select id="plenoGoles">
-    <option value="">Goles</option>
+  <label>Goles Local</label>
+  <select id="pl15_local" required>
+    <option value=""></option>
+    <option value="0">0</option>
     <option value="1">1</option>
     <option value="2">2</option>
-    <option value="3+">3+</option>
+    <option value="M">M</option>
+  </select>
+
+  <label>Goles Visitante</label>
+  <select id="pl15_visitante" required>
+    <option value=""></option>
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="M">M</option>
   </select>
 
   <button type="submit">Enviar quiniela</button>
@@ -45,8 +50,9 @@
 <div id="resultado"></div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwt3DloYuJPYFq1MAuRymiTFE74oi_aiG8UoZdDidftZVjdTm4CN7V0j_ucq-r2P7sH/exec";
+const SCRIPT_URL = "PEGA_AQUI_TU_URL";
 
+/* ---------- CARGAR PARTIDOS ---------- */
 async function cargarPartidos() {
   const res = await fetch(SCRIPT_URL + "?action=partidos");
   const partidos = await res.json();
@@ -69,21 +75,27 @@ async function cargarPartidos() {
 
 cargarPartidos();
 
+/* ---------- ENVÍO DE VOTO ---------- */
 document.getElementById("form").addEventListener("submit", async e => {
   e.preventDefault();
   const params = new URLSearchParams();
-  document.querySelectorAll("select[name^='p']").forEach(s => params.append(s.name, s.value));
-  params.append("resultado", plenoResultado.value);
-  if (plenoResultado.value !== "empate") params.append("goles", plenoGoles.value);
 
-  const res = await fetch(SCRIPT_URL + "?" + params.toString());
+  document.querySelectorAll("select[name^='p']")
+    .forEach(s => params.append(s.name, s.value));
+
+  params.append("pl15_local", document.getElementById("pl15_local").value);
+  params.append("pl15_visitante", document.getElementById("pl15_visitante").value);
+
+  const res = await fetch(https://script.google.com/macros/s/AKfycbxV4uLLm73iytjoMi5C67h5AnB2kMp3EdfNaHbLK5mMbFrxr0LOUrDw8J-QLD38ECit/exec + "?" + params.toString());
   const txt = await res.text();
   alert(txt === "OK" ? "✅ Voto registrado" : txt);
 });
 
+/* ---------- MOSTRAR RESULTADO FINAL ---------- */
 document.getElementById("verResultado").addEventListener("click", async () => {
   const res = await fetch(SCRIPT_URL + "?action=resultado");
   const data = await res.json();
+
   let html = `<div class="resultado"><h2>Quiniela final</h2>`;
 
   data.partidos.forEach(p => {
@@ -97,12 +109,15 @@ document.getElementById("verResultado").addEventListener("click", async () => {
       </div>`;
   });
 
-  html += `<div class="pleno"><strong>Pleno 15:</strong><br>
-    ${data.pleno15.resultado}
-    ${data.pleno15.goles ? " - " + data.pleno15.goles : ""}
-  </div></div>`;
+  html += `
+    <div class="pleno">
+      <strong>Pleno al 15</strong><br>
+      ${data.pleno15.local.nombre}: ${data.pleno15.local.goles}<br>
+      ${data.pleno15.visitante.nombre}: ${data.pleno15.visitante.goles}
+    </div>
+  </div>`;
 
-  resultado.innerHTML = html;
+  document.getElementById("resultado").innerHTML = html;
 });
 </script>
 
