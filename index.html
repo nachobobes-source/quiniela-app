@@ -21,7 +21,7 @@
       text-align: center;
     }
 
-    form {
+    form, .resultado {
       background: #fff;
       padding: 16px;
       border-radius: 6px;
@@ -39,11 +39,18 @@
       margin-bottom: 10px;
     }
 
+    .partido-final {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
     label {
       font-weight: bold;
     }
 
-    select, input {
+    select {
       font-size: 16px;
       padding: 6px;
     }
@@ -59,6 +66,22 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
+    button.secundario {
+      background: #28a745;
+    }
+
+    .doble {
+      font-weight: bold;
+      color: #d63384;
+    }
+
+    .pleno {
+      margin-top: 12px;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 6px;
+    }
   </style>
 </head>
 
@@ -66,6 +89,7 @@
 
   <h1>Formulario de Quiniela</h1>
 
+  <!-- ================= FORMULARIO ================= -->
   <form id="quinielaForm">
 
     <div id="partidos"></div>
@@ -97,8 +121,22 @@
     <button type="submit">Enviar quiniela</button>
   </form>
 
+  <!-- ================= RESULTADO FINAL ================= -->
+  <button id="verResultadoBtn" class="secundario">
+    Ver quiniela final
+  </button>
+
+  <div id="resultadoFinal"></div>
+
   <script>
-    // -------- PARTIDOS 1 A 14 --------
+    // ==================================================
+    // CONFIGURACIÓN
+    // ==================================================
+    const SCRIPT_URL = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT";
+
+    // ==================================================
+    // CREAR PARTIDOS 1–14
+    // ==================================================
     const partidosDiv = document.getElementById("partidos");
 
     for (let i = 1; i <= 14; i++) {
@@ -116,7 +154,9 @@
       partidosDiv.appendChild(div);
     }
 
-    // -------- ENVÍO --------
+    // ==================================================
+    // ENVÍO DE VOTO
+    // ==================================================
     document.getElementById("quinielaForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
@@ -129,10 +169,7 @@
       params.append("resultado", document.getElementById("plenoResultado").value);
       params.append("goles", document.getElementById("plenoGoles").value);
 
-      const url =
-        "https://script.google.com/macros/s/AKfycbwawKSrbHlUpNxlZQpWvz8MpiSsBanz0pZAMoCnUhLzJ0yY_DIuOnSJVo1hF6AKkuA/exec" +
-        "?" +
-        params.toString();
+      const url = SCRIPT_URL + "?" + params.toString();
 
       try {
         const response = await fetch(url);
@@ -147,6 +184,46 @@
 
       } catch (err) {
         alert("❌ Error enviando el voto: " + err.message);
+      }
+    });
+
+    // ==================================================
+    // MOSTRAR QUINIELA FINAL
+    // ==================================================
+    document.getElementById("verResultadoBtn").addEventListener("click", async function () {
+      const contenedor = document.getElementById("resultadoFinal");
+      contenedor.innerHTML = "⏳ Calculando quiniela final...";
+
+      try {
+        const response = await fetch(SCRIPT_URL + "?action=resultado");
+        const data = await response.json();
+
+        let html = `<div class="resultado"><h2>Quiniela final</h2>`;
+
+        data.partidos.forEach(p => {
+          const esDoble = data.dobles.includes(p.partido);
+          html += `
+            <div class="partido-final">
+              <span>Partido ${p.partido}</span>
+              <span class="${esDoble ? "doble" : ""}">
+                ${p.principal}${esDoble ? " (DOBLE)" : ""}
+              </span>
+            </div>
+          `;
+        });
+
+        html += `
+          <div class="pleno">
+            <strong>Pleno al 15</strong><br>
+            Resultado: ${data.pleno15.resultado}<br>
+            Goles: ${data.pleno15.goles}
+          </div>
+        </div>`;
+
+        contenedor.innerHTML = html;
+
+      } catch (err) {
+        contenedor.innerHTML = "❌ Error obteniendo la quiniela final";
       }
     });
   </script>
