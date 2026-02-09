@@ -6,227 +6,118 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
-      background: #ffd700;
-      color: #000;
-      padding: 12px;
-      border-radius: 6px;
-      text-align: center;
-    }
-
-    form, .resultado {
-      background: #fff;
-      padding: 16px;
-      border-radius: 6px;
-      margin-top: 20px;
-    }
-
-    .campo {
-      margin-bottom: 12px;
-    }
-
-    .partido {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .partido-final {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      border-bottom: 1px solid #ddd;
-    }
-
-    label {
-      font-weight: bold;
-    }
-
-    select {
-      font-size: 16px;
-      padding: 6px;
-    }
-
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      font-size: 18px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    button.secundario {
-      background: #28a745;
-    }
-
-    .doble {
-      font-weight: bold;
-      color: #d63384;
-    }
-
-    .pleno {
-      margin-top: 12px;
-      padding: 10px;
-      background: #f8f9fa;
-      border-radius: 6px;
-    }
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+    h1 { background: #ffd700; padding: 12px; text-align: center; border-radius: 6px; }
+    form, .resultado { background: #fff; padding: 16px; border-radius: 6px; margin-top: 20px; }
+    .partido, .partido-final { display: flex; justify-content: space-between; margin-bottom: 8px; }
+    .doble { font-weight: bold; color: #d63384; }
+    .pleno { background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 12px; }
+    button { width: 100%; padding: 12px; font-size: 18px; margin-top: 16px; }
   </style>
 </head>
 
 <body>
 
-  <h1>Formulario de Quiniela</h1>
+<h1>Formulario de Quiniela</h1>
 
-  <!-- ================= FORMULARIO ================= -->
-  <form id="quinielaForm">
+<form id="quinielaForm">
+  <div id="partidos"></div>
 
-    <div id="partidos"></div>
+  <h2>Pleno al 15</h2>
 
-    <hr>
+  <select id="plenoResultado" required>
+    <option value="">Resultado</option>
+    <option value="local">Gana el local</option>
+    <option value="empate">Empate</option>
+    <option value="visitante">Gana el visitante</option>
+  </select>
 
-    <h2>Partido 15 (Pleno al 15)</h2>
+  <div id="campoGoles">
+    <select id="plenoGoles">
+      <option value="">Goles</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3+">3+</option>
+    </select>
+  </div>
 
-    <div class="campo">
-      <label>Resultado:</label><br>
-      <select id="plenoResultado" required>
-        <option value="">--</option>
-        <option value="local">Gana el local</option>
-        <option value="empate">Empate</option>
-        <option value="visitante">Gana el visitante</option>
+  <button type="submit">Enviar quiniela</button>
+</form>
+
+<button id="verResultadoBtn">Ver quiniela final</button>
+<div id="resultadoFinal"></div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxsr-oiPcxMxjoWsdsBYvFuC-9psc5ePdPTPJbopuhWrcZ2QEQUSnIYcz6VHWD9s_U3/exec";
+
+// PARTIDOS
+const partidosDiv = document.getElementById("partidos");
+for (let i = 1; i <= 14; i++) {
+  partidosDiv.innerHTML += `
+    <div class="partido">
+      <span>Partido ${i}</span>
+      <select name="p${i}" required>
+        <option value=""></option>
+        <option value="1">1</option>
+        <option value="X">X</option>
+        <option value="2">2</option>
       </select>
-    </div>
+    </div>`;
+}
 
-    <div class="campo">
-      <label>Diferencia de goles:</label><br>
-      <select id="plenoGoles" required>
-        <option value="">--</option>
-        <option value="1">Por 1 gol</option>
-        <option value="2">Por 2 goles</option>
-        <option value="3+">Por 3 o más goles</option>
-      </select>
-    </div>
+// PLENO: ocultar goles si empate
+const resultadoSel = document.getElementById("plenoResultado");
+const campoGoles = document.getElementById("campoGoles");
+resultadoSel.addEventListener("change", () => {
+  campoGoles.style.display = resultadoSel.value === "empate" ? "none" : "block";
+});
 
-    <button type="submit">Enviar quiniela</button>
-  </form>
+// ENVÍO VOTO
+document.getElementById("quinielaForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const params = new URLSearchParams();
 
-  <!-- ================= RESULTADO FINAL ================= -->
-  <button id="verResultadoBtn" class="secundario">
-    Ver quiniela final
-  </button>
+  document.querySelectorAll("select[name^='p']").forEach(s => params.append(s.name, s.value));
+  params.append("resultado", resultadoSel.value);
+  if (resultadoSel.value !== "empate") {
+    params.append("goles", document.getElementById("plenoGoles").value);
+  }
 
-  <div id="resultadoFinal"></div>
+  const res = await fetch(SCRIPT_URL + "?" + params.toString());
+  const txt = await res.text();
+  if (txt !== "OK") alert(txt);
+  else alert("✅ Voto registrado correctamente");
+});
 
-  <script>
-    // ==================================================
-    // CONFIGURACIÓN
-    // ==================================================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyXsxsS89bhgHC2t9eeSKTpSeNHIxKlYU0XhvbEy6n_t5Z0JtQSj504DHjY9dcJhs6/exec";
+// MOSTRAR RESULTADO FINAL
+document.getElementById("verResultadoBtn").addEventListener("click", async () => {
+  const cont = document.getElementById("resultadoFinal");
+  cont.innerHTML = "Calculando...";
+  const res = await fetch(SCRIPT_URL + "?action=resultado");
+  const data = await res.json();
 
-    // ==================================================
-    // CREAR PARTIDOS 1–14
-    // ==================================================
-    const partidosDiv = document.getElementById("partidos");
+  let html = `<div class="resultado"><h2>Quiniela final</h2>`;
+  data.partidos.forEach(p => {
+    const esDoble = data.dobles.includes(p.partido);
+    html += `
+      <div class="partido-final">
+        <span>Partido ${p.partido}</span>
+        <span class="${esDoble ? "doble" : ""}">
+          ${esDoble ? `${p.principal} / ${p.segundo}` : p.principal}
+        </span>
+      </div>`;
+  });
 
-    for (let i = 1; i <= 14; i++) {
-      const div = document.createElement("div");
-      div.className = "partido";
-      div.innerHTML = `
-        <label>Partido ${i}</label>
-        <select name="p${i}" required>
-          <option value="">--</option>
-          <option value="1">1</option>
-          <option value="X">X</option>
-          <option value="2">2</option>
-        </select>
-      `;
-      partidosDiv.appendChild(div);
-    }
+  html += `
+    <div class="pleno">
+      <strong>Pleno al 15</strong><br>
+      Resultado: ${data.pleno15.resultado}
+      ${data.pleno15.goles ? `<br>Goles: ${data.pleno15.goles}` : ""}
+    </div></div>`;
 
-    // ==================================================
-    // ENVÍO DE VOTO
-    // ==================================================
-    document.getElementById("quinielaForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const params = new URLSearchParams();
-
-      document.querySelectorAll("select[name^='p']").forEach(sel => {
-        params.append(sel.name, sel.value);
-      });
-
-      params.append("resultado", document.getElementById("plenoResultado").value);
-      params.append("goles", document.getElementById("plenoGoles").value);
-
-      const url = SCRIPT_URL + "?" + params.toString();
-
-      try {
-        const response = await fetch(url);
-        const text = await response.text();
-
-        if (text !== "OK") {
-          throw new Error(text);
-        }
-
-        alert("✅ Voto registrado correctamente");
-        document.getElementById("quinielaForm").reset();
-
-      } catch (err) {
-        alert("❌ Error enviando el voto: " + err.message);
-      }
-    });
-
-    // ==================================================
-    // MOSTRAR QUINIELA FINAL
-    // ==================================================
-    document.getElementById("verResultadoBtn").addEventListener("click", async function () {
-      const contenedor = document.getElementById("resultadoFinal");
-      contenedor.innerHTML = "⏳ Calculando quiniela final...";
-
-      try {
-        const response = await fetch(SCRIPT_URL + "?action=resultado");
-        const data = await response.json();
-
-        let html = `<div class="resultado"><h2>Quiniela final</h2>`;
-
-        data.partidos.forEach(p => {
-          const esDoble = data.dobles.includes(p.partido);
-          html += `
-            <div class="partido-final">
-              <span>Partido ${p.partido}</span>
-              <span class="${esDoble ? "doble" : ""}">
-                ${p.principal}${esDoble ? " (DOBLE)" : ""}
-              </span>
-            </div>
-          `;
-        });
-
-        html += `
-          <div class="pleno">
-            <strong>Pleno al 15</strong><br>
-            Resultado: ${data.pleno15.resultado}<br>
-            Goles: ${data.pleno15.goles}
-          </div>
-        </div>`;
-
-        contenedor.innerHTML = html;
-
-      } catch (err) {
-        contenedor.innerHTML = "❌ Error obteniendo la quiniela final";
-      }
-    });
-  </script>
+  cont.innerHTML = html;
+});
+</script>
 
 </body>
 </html>
