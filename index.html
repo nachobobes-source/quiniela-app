@@ -59,10 +59,6 @@
       border-radius: 6px;
       cursor: pointer;
     }
-
-    button:disabled {
-      background: #999;
-    }
   </style>
 </head>
 
@@ -71,18 +67,6 @@
   <h1>Formulario de Quiniela</h1>
 
   <form id="quinielaForm">
-
-    <div class="campo">
-      <label>Nombre:</label><br>
-      <input type="text" id="nombre" required style="width:100%;">
-    </div>
-
-    <div class="campo">
-      <label>Email:</label><br>
-      <input type="email" id="email" required style="width:100%;">
-    </div>
-
-    <hr>
 
     <div id="partidos"></div>
 
@@ -114,13 +98,12 @@
   </form>
 
   <script>
-    // ---------- CREAR PARTIDOS 1 A 14 ----------
+    // -------- PARTIDOS 1 A 14 --------
     const partidosDiv = document.getElementById("partidos");
 
     for (let i = 1; i <= 14; i++) {
       const div = document.createElement("div");
       div.className = "partido";
-
       div.innerHTML = `
         <label>Partido ${i}</label>
         <select name="p${i}" required>
@@ -130,38 +113,29 @@
           <option value="2">2</option>
         </select>
       `;
-
       partidosDiv.appendChild(div);
     }
 
-    // ---------- ENVÍO DEL FORMULARIO ----------
+    // -------- ENVÍO --------
     document.getElementById("quinielaForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const data = {
-        pronosticos: {},
-        pleno15: {
-          resultado: document.getElementById("plenoResultado").value,
-          goles: document.getElementById("plenoGoles").value
-        }
-      };
+      const params = new URLSearchParams();
 
       document.querySelectorAll("select[name^='p']").forEach(sel => {
-        data.pronosticos[sel.name] = sel.value;
+        params.append(sel.name, sel.value);
       });
 
-      try {
-        const response = await fetch(
-          "https://script.google.com/macros/s/AKfycbzTm0k-yUHJ-C5JRWyLOstyXOQWmSBBeT9ZMadhVb8HUXNdVl5xl--Twjm0_KZXz3S7/exec",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-          }
-        );
+      params.append("resultado", document.getElementById("plenoResultado").value);
+      params.append("goles", document.getElementById("plenoGoles").value);
 
+      const url =
+        "https://script.google.com/macros/s/AKfycbwawKSrbHlUpNxlZQpWvz8MpiSsBanz0pZAMoCnUhLzJ0yY_DIuOnSJVo1hF6AKkuA/exec" +
+        "?" +
+        params.toString();
+
+      try {
+        const response = await fetch(url);
         const text = await response.text();
 
         if (text !== "OK") {
@@ -171,9 +145,8 @@
         alert("✅ Voto registrado correctamente");
         document.getElementById("quinielaForm").reset();
 
-      } catch (error) {
-        console.error(error);
-        alert("❌ Error enviando el voto: " + error.message);
+      } catch (err) {
+        alert("❌ Error enviando el voto: " + err.message);
       }
     });
   </script>
