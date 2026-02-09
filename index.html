@@ -6,38 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background:#f4f4f4;
-  padding:16px;
-}
-h1 {
-  background:#ffd700;
-  padding:12px;
-  text-align:center;
-  border-radius:6px;
-}
-select, button {
-  padding:6px;
-  font-size:16px;
-}
-button {
-  width:100%;
-  margin-top:12px;
-}
-.tabs button {
-  width:32%;
-}
-.tab {
-  display:none;
-  background:#fff;
-  padding:16px;
-  border-radius:6px;
-  margin-top:12px;
-}
+body { font-family: Arial; background:#f4f4f4; padding:16px; }
+h1 { background:#ffd700; padding:12px; text-align:center; border-radius:6px; }
+select, button { padding:6px; font-size:16px; }
+button { width:100%; margin-top:12px; }
+.tabs button { width:32%; }
+.tab { display:none; background:#fff; padding:16px; border-radius:6px; margin-top:12px; }
 .tab.active { display:block; }
 
-/* PARTIDOS */
 .partido {
   display:grid;
   grid-template-columns: 1fr 70px;
@@ -50,36 +26,10 @@ button {
   overflow:hidden;
   text-overflow:ellipsis;
 }
-.partido select {
-  width:70px;
-}
+.partido select { width:70px; }
 
-/* RESULTADOS */
-.fila {
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:6px;
-}
-.doble {
-  color:#d63384;
-  font-weight:bold;
-}
-.pleno {
-  margin-top:12px;
-  padding:10px;
-  background:#f8f9fa;
-  border-radius:6px;
-}
-table {
-  width:100%;
-  border-collapse:collapse;
-}
-th, td {
-  border:1px solid #ccc;
-  padding:6px;
-  text-align:center;
-}
-th { background:#eee; }
+.fila { display:flex; justify-content:space-between; margin-bottom:6px; }
+.doble { color:#d63384; font-weight:bold; }
 </style>
 </head>
 
@@ -96,7 +46,6 @@ th { background:#eee; }
   <button onclick="mostrar('clasificacion')">Clasificación</button>
 </div>
 
-<!-- VOTAR -->
 <div id="votar" class="tab active">
   <h2>Votar</h2>
   <div id="partidos"></div>
@@ -107,20 +56,18 @@ th { background:#eee; }
   <button onclick="enviar()">Enviar quiniela</button>
 </div>
 
-<!-- RESULTADO -->
 <div id="resultado" class="tab">
   <h2>Quiniela final</h2>
   <div id="quinielaFinal"></div>
 </div>
 
-<!-- CLASIFICACIÓN -->
 <div id="clasificacion" class="tab">
   <h2>Clasificación</h2>
   <div id="tablaClasificacion"></div>
 </div>
 
 <script>
-const URL = "https://script.google.com/macros/s/AKfycbyk5jP52iL_t8RRSeU_M5g-6qkJLyGTN1ZcL2He2Bcxbv4Unun5cwf5hkIveC5rTJuI/exec";
+const URL = "https://script.google.com/macros/s/AKfycbxZs_yhBJ9W185QF5JaALhTSO6WqOIZzlCv-_LBbMp75QdPRgFwzYjhv82qkw9UYK_i/exec";
 
 function mostrar(id){
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
@@ -130,41 +77,40 @@ function mostrar(id){
 }
 
 /* USUARIOS */
-fetch(URL+"?action=usuarios")
-  .then(r=>r.json())
-  .then(u=>{
-    usuario.innerHTML = `<option value="">--</option>`;
-    u.forEach(n=>usuario.innerHTML+=`<option>${n}</option>`);
-  });
+fetch(URL+"?action=usuarios").then(r=>r.json()).then(u=>{
+  usuario.innerHTML = `<option value="">--</option>`;
+  u.forEach(n=>usuario.innerHTML+=`<option>${n}</option>`);
+});
 
 /* PARTIDOS */
-fetch(URL+"?action=partidos")
-  .then(r=>r.json())
-  .then(p=>{
-    p.forEach(x=>{
-      partidos.innerHTML+=`
-        <div class="partido">
-          <span title="${x.nombre}">${x.nombre}</span>
-          <select name="p${x.id}">
-            <option></option>
-            <option>1</option>
-            <option>X</option>
-            <option>2</option>
-          </select>
-        </div>`;
-    });
+fetch(URL+"?action=partidos").then(r=>r.json()).then(p=>{
+  p.forEach(x=>{
+    partidos.innerHTML+=`
+      <div class="partido">
+        <span title="${x.nombre}">${x.nombre}</span>
+        <select name="p${x.id}">
+          <option></option><option>1</option><option>X</option><option>2</option>
+        </select>
+      </div>`;
   });
+});
 
-/* PLENO (nombres desde backend implícito en resultado final) */
-document.getElementById("pleno").innerHTML = `
-  <div class="partido">
-    <span>Equipo Local</span>
-    <select id="pl15_local"><option></option><option>0</option><option>1</option><option>2</option><option>M</option></select>
-  </div>
-  <div class="partido">
-    <span>Equipo Visitante</span>
-    <select id="pl15_visitante"><option></option><option>0</option><option>1</option><option>2</option><option>M</option></select>
-  </div>`;
+/* PLENO CON NOMBRES */
+fetch(URL+"?action=pleno").then(r=>r.json()).then(p=>{
+  pleno.innerHTML = `
+    <div class="partido">
+      <span>${p.local}</span>
+      <select id="pl15_local">
+        <option></option><option>0</option><option>1</option><option>2</option><option>M</option>
+      </select>
+    </div>
+    <div class="partido">
+      <span>${p.visitante}</span>
+      <select id="pl15_visitante">
+        <option></option><option>0</option><option>1</option><option>2</option><option>M</option>
+      </select>
+    </div>`;
+});
 
 /* ENVIAR */
 function enviar(){
@@ -177,33 +123,34 @@ function enviar(){
   fetch(URL+"?"+p).then(r=>r.text()).then(t=>alert(t));
 }
 
-/* RESULTADO FINAL */
+/* RESULTADO */
 function cargarResultado(){
-  fetch(URL+"?action=resultado")
-    .then(r=>r.json())
-    .then(d=>{
-      let h="";
-      d.partidos.forEach(p=>{
-        const es=d.dobles.includes(p.partido);
-        h+=`<div class="fila"><span>Partido ${p.partido}</span>
-        <span class="${es?"doble":""}">${es?`${p.principal}/${p.segundo}`:p.principal}</span></div>`;
-      });
-      quinielaFinal.innerHTML=h;
+  fetch(URL+"?action=resultado").then(r=>r.json()).then(d=>{
+    let h="";
+    d.partidos.forEach(p=>{
+      const es=d.dobles.includes(p.partido);
+      h+=`<div class="fila">
+        <span>Partido ${p.partido}</span>
+        <span class="${es?"doble":""}">
+          ${es?`${p.principal}/${p.segundo}`:p.principal}
+        </span>
+      </div>`;
     });
+    quinielaFinal.innerHTML=h;
+  });
 }
 
 /* CLASIFICACIÓN */
 function cargarClasificacion(){
-  fetch(URL+"?action=clasificacion")
-    .then(r=>r.json())
-    .then(d=>{
-      let h="<table><tr><th>Usuario</th><th>Puntos</th></tr>";
-      d.slice(1).forEach(r=>h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`);
-      h+="</table>";
-      tablaClasificacion.innerHTML=h;
-    });
+  fetch(URL+"?action=clasificacion").then(r=>r.json()).then(d=>{
+    let h="<table><tr><th>Usuario</th><th>Puntos</th></tr>";
+    d.slice(1).forEach(r=>h+=`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`);
+    h+="</table>";
+    tablaClasificacion.innerHTML=h;
+  });
 }
 </script>
 
 </body>
 </html>
+
