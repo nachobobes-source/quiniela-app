@@ -6,116 +6,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
-    h1 { background: #ffd700; padding: 12px; text-align: center; border-radius: 6px; }
-    form, .resultado { background: #fff; padding: 16px; border-radius: 6px; margin-top: 20px; }
-    .partido, .partido-final { display: flex; justify-content: space-between; margin-bottom: 8px; }
-    .doble { font-weight: bold; color: #d63384; }
-    .pleno { background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 12px; }
-    button { width: 100%; padding: 12px; font-size: 18px; margin-top: 16px; }
+    body { font-family: Arial; background:#f4f4f4; padding:20px; }
+    h1 { background:#ffd700; padding:12px; text-align:center; border-radius:6px; }
+    form, .resultado { background:#fff; padding:16px; border-radius:6px; margin-top:20px; }
+    .fila { display:flex; justify-content:space-between; margin-bottom:8px; }
+    .doble { color:#d63384; font-weight:bold; }
+    .pleno { margin-top:12px; padding:10px; background:#f8f9fa; border-radius:6px; }
+    button { width:100%; padding:12px; margin-top:16px; font-size:18px; }
   </style>
 </head>
 
 <body>
 
-<h1>Formulario de Quiniela</h1>
+<h1>Quiniela semanal</h1>
 
-<form id="quinielaForm">
+<form id="form">
   <div id="partidos"></div>
 
   <h2>Pleno al 15</h2>
-
   <select id="plenoResultado" required>
     <option value="">Resultado</option>
-    <option value="local">Gana el local</option>
+    <option value="local">Local</option>
     <option value="empate">Empate</option>
-    <option value="visitante">Gana el visitante</option>
+    <option value="visitante">Visitante</option>
   </select>
 
-  <div id="campoGoles">
-    <select id="plenoGoles">
-      <option value="">Goles</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3+">3+</option>
-    </select>
-  </div>
+  <select id="plenoGoles">
+    <option value="">Goles</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3+">3+</option>
+  </select>
 
   <button type="submit">Enviar quiniela</button>
 </form>
 
-<button id="verResultadoBtn">Ver quiniela final</button>
-<div id="resultadoFinal"></div>
+<button id="verResultado">Ver quiniela final</button>
+<div id="resultado"></div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxsr-oiPcxMxjoWsdsBYvFuC-9psc5ePdPTPJbopuhWrcZ2QEQUSnIYcz6VHWD9s_U3/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwt3DloYuJPYFq1MAuRymiTFE74oi_aiG8UoZdDidftZVjdTm4CN7V0j_ucq-r2P7sH/exec";
 
-// PARTIDOS
-const partidosDiv = document.getElementById("partidos");
-for (let i = 1; i <= 14; i++) {
-  partidosDiv.innerHTML += `
-    <div class="partido">
-      <span>Partido ${i}</span>
-      <select name="p${i}" required>
-        <option value=""></option>
-        <option value="1">1</option>
-        <option value="X">X</option>
-        <option value="2">2</option>
-      </select>
-    </div>`;
+async function cargarPartidos() {
+  const res = await fetch(SCRIPT_URL + "?action=partidos");
+  const partidos = await res.json();
+  const div = document.getElementById("partidos");
+  div.innerHTML = "";
+
+  partidos.forEach(p => {
+    div.innerHTML += `
+      <div class="fila">
+        <span>${p.nombre}</span>
+        <select name="p${p.id}" required>
+          <option value=""></option>
+          <option value="1">1</option>
+          <option value="X">X</option>
+          <option value="2">2</option>
+        </select>
+      </div>`;
+  });
 }
 
-// PLENO: ocultar goles si empate
-const resultadoSel = document.getElementById("plenoResultado");
-const campoGoles = document.getElementById("campoGoles");
-resultadoSel.addEventListener("change", () => {
-  campoGoles.style.display = resultadoSel.value === "empate" ? "none" : "block";
-});
+cargarPartidos();
 
-// ENVÍO VOTO
-document.getElementById("quinielaForm").addEventListener("submit", async e => {
+document.getElementById("form").addEventListener("submit", async e => {
   e.preventDefault();
   const params = new URLSearchParams();
-
   document.querySelectorAll("select[name^='p']").forEach(s => params.append(s.name, s.value));
-  params.append("resultado", resultadoSel.value);
-  if (resultadoSel.value !== "empate") {
-    params.append("goles", document.getElementById("plenoGoles").value);
-  }
+  params.append("resultado", plenoResultado.value);
+  if (plenoResultado.value !== "empate") params.append("goles", plenoGoles.value);
 
   const res = await fetch(SCRIPT_URL + "?" + params.toString());
   const txt = await res.text();
-  if (txt !== "OK") alert(txt);
-  else alert("✅ Voto registrado correctamente");
+  alert(txt === "OK" ? "✅ Voto registrado" : txt);
 });
 
-// MOSTRAR RESULTADO FINAL
-document.getElementById("verResultadoBtn").addEventListener("click", async () => {
-  const cont = document.getElementById("resultadoFinal");
-  cont.innerHTML = "Calculando...";
+document.getElementById("verResultado").addEventListener("click", async () => {
   const res = await fetch(SCRIPT_URL + "?action=resultado");
   const data = await res.json();
-
   let html = `<div class="resultado"><h2>Quiniela final</h2>`;
+
   data.partidos.forEach(p => {
     const esDoble = data.dobles.includes(p.partido);
     html += `
-      <div class="partido-final">
-        <span>Partido ${p.partido}</span>
+      <div class="fila">
+        <span>${p.nombre}</span>
         <span class="${esDoble ? "doble" : ""}">
           ${esDoble ? `${p.principal} / ${p.segundo}` : p.principal}
         </span>
       </div>`;
   });
 
-  html += `
-    <div class="pleno">
-      <strong>Pleno al 15</strong><br>
-      Resultado: ${data.pleno15.resultado}
-      ${data.pleno15.goles ? `<br>Goles: ${data.pleno15.goles}` : ""}
-    </div></div>`;
+  html += `<div class="pleno"><strong>Pleno 15:</strong><br>
+    ${data.pleno15.resultado}
+    ${data.pleno15.goles ? " - " + data.pleno15.goles : ""}
+  </div></div>`;
 
-  cont.innerHTML = html;
+  resultado.innerHTML = html;
 });
 </script>
 
