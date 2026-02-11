@@ -2,110 +2,147 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Quiniela del Grupo</title>
+<title>Quiniela Premium</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background:#f4f4f4;
-  padding:16px;
+:root{
+  --gold:#c8a13a;
+  --dark:#1c1c1c;
+  --bg:#f4f4f4;
+  --tab:#2e2e2e;
+  --tab-active:#c8a13a;
 }
-h1 {
-  background:#ffd700;
-  padding:12px;
+
+body{
+  margin:0;
+  font-family: 'Segoe UI', sans-serif;
+  background:var(--bg);
+  color:#222;
+}
+
+/* HEADER */
+header{
+  background:linear-gradient(135deg,#111,#333);
+  color:white;
+  padding:20px;
   text-align:center;
-  border-radius:6px;
+  font-size:22px;
+  letter-spacing:1px;
 }
-select, button {
-  padding:6px;
-  font-size:16px;
-}
-button {
-  width:100%;
-  margin-top:10px;
-}
-.tabs {
+
+/* TABS */
+.tabs{
   display:flex;
-  gap:6px;
-  margin-top:10px;
+  background:var(--tab);
 }
-.tabs button {
+.tabs button{
   flex:1;
+  padding:12px;
+  border:none;
+  background:var(--tab);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
 }
-.tab {
+.tabs button:hover{
+  background:#444;
+}
+.tabs button.active{
+  background:var(--tab-active);
+  color:#000;
+}
+
+/* SECCIONES */
+.tab{
   display:none;
-  background:#fff;
-  padding:16px;
-  border-radius:6px;
-  margin-top:12px;
+  padding:20px;
 }
-.tab.active {
+.tab.active{
   display:block;
 }
 
-/* Partidos */
-.partido {
+/* PARTIDOS */
+.partido{
   display:grid;
-  grid-template-columns: 1fr 70px;
-  align-items:center;
-  gap:8px;
+  grid-template-columns:1fr 70px;
+  gap:10px;
   margin-bottom:8px;
 }
-.partido span {
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.partido select {
+.partido select{
   width:70px;
+  padding:4px;
 }
 
-/* Resultado */
-.fila {
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:6px;
-}
-.doble {
-  color:#d63384;
-  font-weight:bold;
-}
-
-/* Tablas */
-table {
+/* TABLAS */
+table{
   width:100%;
   border-collapse:collapse;
-  margin-top:10px;
+  margin-top:15px;
 }
-th, td {
-  border:1px solid #ccc;
+th,td{
+  border:1px solid #ddd;
   padding:6px;
   text-align:center;
 }
-th {
-  background:#eee;
+th{
+  background:#222;
+  color:white;
+}
+tr:nth-child(even){
+  background:#f2f2f2;
+}
+
+/* DOBLE */
+.doble{
+  color:var(--gold);
+  font-weight:bold;
+}
+
+/* PLENO */
+.pleno-box{
+  margin-top:15px;
+  padding:12px;
+  background:#fff7e0;
+  border-left:5px solid var(--gold);
+}
+
+/* CLASIFICACION */
+.copa{
+  font-size:20px;
+  margin-right:5px;
+}
+
+footer{
+  text-align:center;
+  padding:15px;
+  font-size:12px;
+  color:#666;
 }
 </style>
 </head>
 
 <body>
 
-<h1>Quiniela del Grupo</h1>
+<header>
+⚽ Quiniela del Grupo
+</header>
 
+<div style="padding:15px;">
 <label>¿Quién eres?</label>
 <select id="usuario"></select>
+</div>
 
 <div class="tabs">
-  <button onclick="mostrar('votar')">Votar</button>
-  <button onclick="mostrar('ultima')">Última jornada</button>
-  <button onclick="mostrar('historico')">Histórico</button>
-  <button onclick="mostrar('clasificacion')">Clasificación</button>
+  <button onclick="mostrar('votar')" id="tabVotar">Votar</button>
+  <button onclick="mostrar('ultima')" id="tabUltima">Última jornada</button>
+  <button onclick="mostrar('clasificacion')" id="tabClasificacion">Clasificación</button>
 </div>
 
 <!-- ================= VOTAR ================= -->
 <div id="votar" class="tab active">
-  <h2>Votar quiniela</h2>
+  <h2>Realiza tu pronóstico</h2>
   <div id="partidos"></div>
 
   <h3>Pleno al 15</h3>
@@ -116,166 +153,161 @@ th {
 
 <!-- ================= ÚLTIMA ================= -->
 <div id="ultima" class="tab">
-  <h2>Última jornada</h2>
-  <div id="ultimaJornada"></div>
+  <h2>Última jornada cerrada</h2>
+  <div id="ultimaContenido"></div>
 </div>
 
-<!-- ================= HISTÓRICO ================= -->
-<div id="historico" class="tab">
-  <h2>Histórico de jornadas</h2>
-  <label>Selecciona jornada</label>
-  <select id="selectorJornada"></select>
-  <div id="detalleJornada"></div>
-</div>
-
-<!-- ================= CLASIFICACIÓN ================= -->
+<!-- ================= CLASIFICACION ================= -->
 <div id="clasificacion" class="tab">
-  <h2>Clasificación</h2>
+  <h2>Clasificación general</h2>
   <div id="tablaClasificacion"></div>
 </div>
 
+<footer>
+Sistema automático de quinielas
+</footer>
+
 <script>
-const URL = "https://script.google.com/macros/s/AKfycbwcvyozEik1vuu42WvrSkAFzhhO60BpVISshA9eSQMkfTA_MFM6gylR0FWPiaTOv_V4/exec";
+const URL="https://script.google.com/macros/s/AKfycbyzXlFn5NmvvpZuoano1yG37zuWbAjorRlZsK2t0mg64Ug0PXTBTH4_uCJK5OpsRY6t/exec";
 
-/* ---------------- Navegación ---------------- */
-function mostrar(id) {
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+/* NAV */
+function mostrar(id){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
   document.getElementById(id).classList.add("active");
+  document.getElementById("tab"+id.charAt(0).toUpperCase()+id.slice(1)).classList.add("active");
 
-  if (id === "ultima") cargarUltima();
-  if (id === "historico") cargarHistorico();
-  if (id === "clasificacion") cargarClasificacion();
+  if(id==="ultima") cargarUltima();
+  if(id==="clasificacion") cargarClasificacion();
 }
 
-/* ---------------- Usuarios ---------------- */
-fetch(URL + "?action=usuarios")
-  .then(r => r.json())
-  .then(u => {
-    usuario.innerHTML = `<option value="">--</option>`;
-    u.forEach(n => usuario.innerHTML += `<option>${n}</option>`);
-  });
+/* USUARIOS */
+fetch(URL+"?action=usuarios")
+.then(r=>r.json())
+.then(u=>{
+  usuario.innerHTML="<option value=''>--</option>";
+  u.forEach(n=>usuario.innerHTML+=`<option>${n}</option>`);
+});
 
-/* ---------------- Partidos ---------------- */
-fetch(URL + "?action=partidos")
-  .then(r => r.json())
-  .then(p => {
-    partidos.innerHTML = "";
-    p.forEach(x => {
-      partidos.innerHTML += `
-        <div class="partido">
-          <span title="${x.nombre}">${x.nombre}</span>
-          <select name="p${x.id}">
-            <option></option>
-            <option>1</option>
-            <option>X</option>
-            <option>2</option>
-          </select>
-        </div>`;
-    });
-  });
-
-/* ---------------- Pleno ---------------- */
-fetch(URL + "?action=pleno")
-  .then(r => r.json())
-  .then(p => {
-    pleno.innerHTML = `
+/* PARTIDOS */
+fetch(URL+"?action=partidos")
+.then(r=>r.json())
+.then(p=>{
+  p.forEach(x=>{
+    partidos.innerHTML+=`
       <div class="partido">
-        <span>${p.local}</span>
-        <select id="pl15_local">
-          <option></option><option>0</option><option>1</option><option>2</option><option>M</option>
-        </select>
-      </div>
-      <div class="partido">
-        <span>${p.visitante}</span>
-        <select id="pl15_visitante">
-          <option></option><option>0</option><option>1</option><option>2</option><option>M</option>
+        <span>${x.nombre}</span>
+        <select name="p${x.id}">
+          <option></option><option>1</option><option>X</option><option>2</option>
         </select>
       </div>`;
   });
+});
 
-/* ---------------- Enviar voto ---------------- */
-function enviarVoto() {
-  if (!usuario.value) {
-    alert("Selecciona tu nombre");
-    return;
+/* PLENO */
+fetch(URL+"?action=pleno")
+.then(r=>r.json())
+.then(p=>{
+  pleno.innerHTML=`
+    <div class="partido">
+      <span>${p.local}</span>
+      <select id="pl15_local">
+        <option></option><option>0</option><option>1</option><option>2</option><option>M</option>
+      </select>
+    </div>
+    <div class="partido">
+      <span>${p.visitante}</span>
+      <select id="pl15_visitante">
+        <option></option><option>0</option><option>1</option><option>2</option><option>M</option>
+      </select>
+    </div>`;
+});
+
+/* ENVIAR */
+function enviarVoto(){
+  if(!usuario.value){alert("Selecciona usuario");return;}
+  const p=new URLSearchParams();
+  p.append("usuario",usuario.value);
+  document.querySelectorAll("select[name^='p']").forEach(s=>p.append(s.name,s.value));
+  p.append("pl15_local",pl15_local.value);
+  p.append("pl15_visitante",pl15_visitante.value);
+  fetch(URL+"?"+p).then(r=>r.text()).then(t=>alert(t));
+}
+
+/* ÚLTIMA COMPLETA */
+function cargarUltima(){
+  fetch(URL+"?action=ultimaCompleta")
+  .then(r=>r.json())
+  .then(d=>{
+    if(!d || !d.quiniela){ ultimaContenido.innerHTML="No hay jornadas cerradas."; return;}
+
+    let html="<h3>Votos</h3>";
+    html+=renderTablaVotos(d.votos);
+    html+="<h3>Quiniela final</h3>";
+    html+=renderQuiniela(d.quiniela);
+    html+="<div class='pleno-box'><strong>Pleno al 15</strong><br>";
+    html+=d.pleno.local+" vs "+d.pleno.visitante+"</div>";
+
+    ultimaContenido.innerHTML=html;
+  });
+}
+
+/* TABLA VOTOS */
+function renderTablaVotos(votos){
+  const usuarios=Object.keys(votos);
+  let html="<table><tr><th>Partido</th>";
+  usuarios.forEach(u=>html+="<th>"+u+"</th>");
+  html+="</tr>";
+
+  for(let i=1;i<=14;i++){
+    html+="<tr><td>"+i+"</td>";
+    usuarios.forEach(u=>html+="<td>"+(votos[u][i]||"")+"</td>");
+    html+="</tr>";
   }
 
-  const p = new URLSearchParams();
-  p.append("usuario", usuario.value);
+  html+="<tr><td>Pleno L</td>";
+  usuarios.forEach(u=>html+="<td>"+(votos[u]["PL15_LOCAL"]||"")+"</td>");
+  html+="</tr>";
 
-  document.querySelectorAll("select[name^='p']")
-    .forEach(s => p.append(s.name, s.value));
+  html+="<tr><td>Pleno V</td>";
+  usuarios.forEach(u=>html+="<td>"+(votos[u]["PL15_VISIT"]||"")+"</td>");
+  html+="</tr>";
 
-  p.append("pl15_local", pl15_local.value);
-  p.append("pl15_visitante", pl15_visitante.value);
-
-  fetch(URL + "?" + p.toString())
-    .then(r => r.text())
-    .then(t => alert(t === "OK" ? "✅ Voto registrado" : t));
+  html+="</table>";
+  return html;
 }
 
-/* ---------------- Última jornada ---------------- */
-function cargarUltima() {
-  fetch(URL + "?action=historico")
-    .then(r => r.json())
-    .then(h => {
-      if (h.length === 0) {
-        ultimaJornada.innerHTML = "No hay jornadas cerradas";
-        return;
-      }
-      const ultima = h[h.length - 2]; // quiniela
-      mostrarQuiniela(JSON.parse(ultima[3]), ultimaJornada);
-    });
-}
-
-/* ---------------- Histórico ---------------- */
-function cargarHistorico() {
-  fetch(URL + "?action=historico")
-    .then(r => r.json())
-    .then(h => {
-      selectorJornada.innerHTML = "";
-      const jornadas = [...new Set(h.map(r => r[0]))];
-      jornadas.forEach(j => selectorJornada.innerHTML += `<option value="${j}">Jornada ${j}</option>`);
-      selectorJornada.onchange = () => mostrarJornada(h);
-      selectorJornada.onchange();
-    });
-}
-
-function mostrarJornada(h) {
-  const j = selectorJornada.value;
-  const q = h.find(r => r[0] == j && r[2] === "quiniela");
-  if (!q) return;
-  mostrarQuiniela(JSON.parse(q[3]), detalleJornada);
-}
-
-/* ---------------- Render quiniela ---------------- */
-function mostrarQuiniela(data, contenedor) {
-  let html = "";
-  data.partidos.forEach(p => {
-    const es = data.dobles.includes(p.partido);
-    html += `
-      <div class="fila">
-        <span>Partido ${p.partido}</span>
-        <span class="${es ? "doble" : ""}">
-          ${es ? `${p.principal}/${p.segundo}` : p.principal}
-        </span>
-      </div>`;
+/* QUINIELA FINAL */
+function renderQuiniela(q){
+  let html="";
+  q.partidos.forEach(p=>{
+    const es=q.dobles.includes(p.partido);
+    html+=`<div>
+      Partido ${p.partido} → 
+      <span class="${es?'doble':''}">
+      ${es? p.principal+" / "+p.segundo : p.principal}
+      </span>
+    </div>`;
   });
-  contenedor.innerHTML = html;
+  return html;
 }
 
-/* ---------------- Clasificación ---------------- */
-function cargarClasificacion() {
-  fetch(URL + "?action=clasificacion")
-    .then(r => r.json())
-    .then(d => {
-      let h = "<table><tr><th>Usuario</th><th>Puntos</th></tr>";
-      d.slice(1).forEach(r => {
-        h += `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`;
-      });
-      h += "</table>";
-      tablaClasificacion.innerHTML = h;
+/* CLASIFICACION */
+function cargarClasificacion(){
+  fetch(URL+"?action=clasificacion")
+  .then(r=>r.json())
+  .then(d=>{
+    let html="<table><tr><th>🏆</th><th>Usuario</th><th>Puntos</th></tr>";
+    d.slice(1).sort((a,b)=>b[1]-a[1]).forEach((r,i)=>{
+      html+=`<tr>
+        <td>${i===0?"🥇":i===1?"🥈":i===2?"🥉":""}</td>
+        <td>${r[0]}</td>
+        <td>${r[1]}</td>
+      </tr>`;
     });
+    html+="</table>";
+    tablaClasificacion.innerHTML=html;
+  });
 }
 </script>
 
