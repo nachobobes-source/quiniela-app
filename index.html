@@ -163,7 +163,7 @@ footer{
 <footer>Sistema automático de quinielas</footer>
 
 <script>
-const URL="https://script.google.com/macros/s/AKfycbxRwnM94YaHOIZhLSZHWV2mwq9v72DceNElpuP1UmDTw2I3sYltXehVLIn6MM6NllDo/exec";
+const URL="https://script.google.com/macros/s/AKfycbywPvmf8QAsPNbpkAvvCRzK_VlXERGK9ApzoVT3EMZmL2tNlaj2whxFRYfi7aATqN5O/exec";
 
 /* ================= NAVEGACION ================= */
 function mostrar(id){
@@ -231,10 +231,10 @@ function cargarUltima(){
     }
 
     let html="<h3>Votos</h3>";
-    html+=renderTablaVotos(d.votos);
+    html+=renderTablaVotos(d.votos, d.partidosNombres);
 
     html+="<h3>Quiniela final</h3>";
-    html+=renderQuiniela(d.quiniela);
+    html+=renderQuiniela(d.quiniela, d.partidosNombres);
 
     html+="<div class='pleno-box'><strong>Pleno al 15</strong><br>";
     html+=d.pleno.localNombre+" "+d.pleno.localResultado+
@@ -275,11 +275,10 @@ function mostrarJornada(data){
   const obj=JSON.parse(fila[3]);
 
   let html="<h3>Votos</h3>";
-  html+=renderTablaVotos(obj.votos);
+ html+=renderTablaVotos(obj.votos, obj.partidosNombres);
 
   html+="<h3>Quiniela final</h3>";
-  html+=renderQuiniela(obj.quiniela);
-
+  html+=renderQuiniela(obj.quiniela, obj.partidosNombres);
   html+="<div class='pleno-box'><strong>Pleno al 15</strong><br>";
   html+=obj.pleno.localNombre+" "+obj.pleno.localResultado+
         " - "+
