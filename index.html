@@ -71,10 +71,6 @@ header{
   margin-bottom:8px;
 }
 
-.partido select{
-  width:70px;
-}
-
 table{
   width:100%;
   border-collapse:collapse;
@@ -167,7 +163,7 @@ footer{
 <footer>Sistema automático de quinielas</footer>
 
 <script>
-const URL="https://script.google.com/macros/s/AKfycbyzXlFn5NmvvpZuoano1yG37zuWbAjorRlZsK2t0mg64Ug0PXTBTH4_uCJK5OpsRY6t/exec";
+const URL="https://script.google.com/macros/s/AKfycbxRwnM94YaHOIZhLSZHWV2mwq9v72DceNElpuP1UmDTw2I3sYltXehVLIn6MM6NllDo/exec";
 
 /* ================= NAVEGACION ================= */
 function mostrar(id){
@@ -224,17 +220,6 @@ fetch(URL+"?action=pleno")
     </div>`;
 });
 
-/* ================= ENVIAR VOTO ================= */
-function enviarVoto(){
-  if(!usuario.value){alert("Selecciona usuario");return;}
-  const p=new URLSearchParams();
-  p.append("usuario",usuario.value);
-  document.querySelectorAll("select[name^='p']").forEach(s=>p.append(s.name,s.value));
-  p.append("pl15_local",pl15_local.value);
-  p.append("pl15_visitante",pl15_visitante.value);
-  fetch(URL+"?"+p).then(r=>r.text()).then(t=>alert(t));
-}
-
 /* ================= ULTIMA COMPLETA ================= */
 function cargarUltima(){
   fetch(URL+"?action=ultimaCompleta")
@@ -247,10 +232,15 @@ function cargarUltima(){
 
     let html="<h3>Votos</h3>";
     html+=renderTablaVotos(d.votos);
+
     html+="<h3>Quiniela final</h3>";
     html+=renderQuiniela(d.quiniela);
+
     html+="<div class='pleno-box'><strong>Pleno al 15</strong><br>";
-    html+=d.pleno.local+" vs "+d.pleno.visitante+"</div>";
+    html+=d.pleno.localNombre+" "+d.pleno.localResultado+
+          " - "+
+          d.pleno.visitanteResultado+" "+d.pleno.visitanteNombre;
+    html+="</div>";
 
     ultimaContenido.innerHTML=html;
   });
@@ -286,10 +276,15 @@ function mostrarJornada(data){
 
   let html="<h3>Votos</h3>";
   html+=renderTablaVotos(obj.votos);
+
   html+="<h3>Quiniela final</h3>";
   html+=renderQuiniela(obj.quiniela);
+
   html+="<div class='pleno-box'><strong>Pleno al 15</strong><br>";
-  html+=obj.pleno.local+" vs "+obj.pleno.visitante+"</div>";
+  html+=obj.pleno.localNombre+" "+obj.pleno.localResultado+
+        " - "+
+        obj.pleno.visitanteResultado+" "+obj.pleno.visitanteNombre;
+  html+="</div>";
 
   historicoContenido.innerHTML=html;
 }
