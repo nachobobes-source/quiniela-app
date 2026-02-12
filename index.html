@@ -289,42 +289,55 @@ function mostrarJornada(data){
 }
 
 /* ================= TABLA VOTOS ================= */
-function renderTablaVotos(votos){
-  const usuarios=Object.keys(votos);
-  let html="<table><tr><th>Partido</th>";
-  usuarios.forEach(u=>html+="<th>"+u+"</th>");
-  html+="</tr>";
+function renderTablaVotos(votos, partidosNombres){
+  const usuarios = Object.keys(votos);
+  let html = "<table><tr><th>Partido</th>";
+  usuarios.forEach(u => html += "<th>" + u + "</th>");
+  html += "</tr>";
 
-  for(let i=1;i<=14;i++){
-    html+="<tr><td>"+i+"</td>";
-    usuarios.forEach(u=>html+="<td>"+(votos[u][i]||"")+"</td>");
-    html+="</tr>";
+  for(let i = 1; i <= 14; i++){
+    const nombre = (partidosNombres && partidosNombres[i-1])
+      ? partidosNombres[i-1]
+      : "Partido " + i;
+
+    html += "<tr><td>" + nombre + "</td>";
+    usuarios.forEach(u => {
+      html += "<td>" + (votos[u][i] || "") + "</td>";
+    });
+    html += "</tr>";
   }
 
-  html+="<tr><td>Pleno L</td>";
-  usuarios.forEach(u=>html+="<td>"+(votos[u]["PL15_LOCAL"]||"")+"</td>");
-  html+="</tr>";
+  html += "<tr><td>Pleno L</td>";
+  usuarios.forEach(u => html += "<td>" + (votos[u]["PL15_LOCAL"] || "") + "</td>");
+  html += "</tr>";
 
-  html+="<tr><td>Pleno V</td>";
-  usuarios.forEach(u=>html+="<td>"+(votos[u]["PL15_VISIT"]||"")+"</td>");
-  html+="</tr>";
+  html += "<tr><td>Pleno V</td>";
+  usuarios.forEach(u => html += "<td>" + (votos[u]["PL15_VISIT"] || "") + "</td>");
+  html += "</tr>";
 
-  html+="</table>";
+  html += "</table>";
   return html;
 }
 
 /* ================= QUINIELA ================= */
-function renderQuiniela(q){
-  let html="";
-  q.partidos.forEach(p=>{
-    const es=q.dobles.includes(p.partido);
-    html+=`<div>
-      Partido ${p.partido} → 
-      <span class="${es?'doble':''}">
-      ${es? p.principal+" / "+p.segundo : p.principal}
+function renderQuiniela(q, partidosNombres){
+  let html = "";
+
+  q.partidos.forEach(p => {
+    const nombre = (partidosNombres && partidosNombres[p.partido - 1])
+      ? partidosNombres[p.partido - 1]
+      : "Partido " + p.partido;
+
+    const esDoble = q.dobles.includes(p.partido);
+
+    html += `<div>
+      ${nombre} → 
+      <span class="${esDoble ? 'doble' : ''}">
+        ${esDoble ? p.principal + " / " + p.segundo : p.principal}
       </span>
     </div>`;
   });
+
   return html;
 }
 
