@@ -358,6 +358,45 @@ function cargarClasificacion(){
     tablaClasificacion.innerHTML=html;
   });
 }
+  /* ================= ENVIAR VOTO ================= */
+window.enviarVoto = function(){
+
+  const usuarioSelect = document.getElementById("usuario");
+  const usuario = usuarioSelect.value;
+
+  if(!usuario){
+    alert("Selecciona usuario");
+    return;
+  }
+
+  const params = new URLSearchParams();
+  params.append("usuario", usuario);
+
+  document.querySelectorAll("select[name^='p']").forEach(select=>{
+    params.append(select.name, select.value);
+  });
+
+  const plenoLocal = document.getElementById("pl15_local");
+  const plenoVisit = document.getElementById("pl15_visitante");
+
+  if(!plenoLocal || !plenoVisit){
+    alert("Error cargando pleno al 15");
+    return;
+  }
+
+  params.append("pl15_local", plenoLocal.value);
+  params.append("pl15_visitante", plenoVisit.value);
+
+  fetch(URL + "?" + params.toString())
+    .then(r=>r.text())
+    .then(response=>{
+      alert(response);
+    })
+    .catch(error=>{
+      console.error(error);
+      alert("Error enviando voto");
+    });
+};
 </script>
 
 </body>
