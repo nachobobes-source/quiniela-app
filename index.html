@@ -175,7 +175,7 @@ footer{
 <footer>Sistema automático de quinielas</footer>
 
 <script>
-const URL="https://script.google.com/macros/s/AKfycbyWndKiIZ1C7EoQOqOxjPscMbwQj1LmO39bT1DeNImP_Kga6Ub_Sy5sETl8Q678kdBd/exec";
+const URL="https://script.google.com/macros/s/AKfycbzb9ytZgNU1ksncvMha-UEJc1SeG_yXGK8Py5thV-2e4mV7OaALo1X3JjXTnU52BoxP/exec";
 
 /* ================= NAVEGACION ================= */
 function mostrar(id){
@@ -234,18 +234,17 @@ fetch(URL+"?action=pleno")
 
 /* ================= ULTIMA COMPLETA ================= */
 function cargarUltima(){
-  fetch(URL+"?action=ultimaCompleta")
+
+  fetch(URL+"?action=quinielaActual")
   .then(r=>r.json())
   .then(d=>{
+
     if(!d || !d.quiniela){
-      ultimaContenido.innerHTML="No hay jornadas cerradas.";
+      ultimaContenido.innerHTML="No hay quiniela calculada.";
       return;
     }
 
-    let html="<h3>Votos</h3>";
-    html+=renderTablaVotos(d.votos, d.partidosNombres);
-
-    html+="<h3>Quiniela final</h3>";
+    let html="<h3>Quiniela actual</h3>";
     html+=renderQuiniela(d.quiniela, d.partidosNombres);
 
     html+="<div class='pleno-box'><strong>Pleno al 15</strong><br>";
