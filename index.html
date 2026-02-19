@@ -175,7 +175,7 @@ footer{
 <footer>Sistema automático de quinielas</footer>
 
 <script>
-const URL="https://script.google.com/macros/s/AKfycbzb9ytZgNU1ksncvMha-UEJc1SeG_yXGK8Py5thV-2e4mV7OaALo1X3JjXTnU52BoxP/exec";
+const URL="https://script.google.com/macros/s/AKfycbzgdxD_rMynis_z21pFiz9q1i7THxoeXv8PHtVaEMoNP4o53_sk5J7-hubQb4M9EfHI/exec";
 
 /* ================= NAVEGACION ================= */
 function mostrar(id){
@@ -244,7 +244,10 @@ function cargarUltima(){
       return;
     }
 
-    let html="<h3>Quiniela actual</h3>";
+    let html="<h3>Votos</h3>";
+    html+=renderTablaVotos(d.votos, d.partidosNombres);
+
+    html+="<h3>Quiniela final</h3>";
     html+=renderQuiniela(d.quiniela, d.partidosNombres);
 
     html+="<div class='pleno-box'><strong>Pleno al 15</strong><br>";
