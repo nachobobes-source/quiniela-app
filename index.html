@@ -116,6 +116,12 @@ footer{
 <body>
 
 <header>⚽ Quiniela del Grupo</header>
+  <div id="estadoBanner" style="
+  text-align:center;
+  padding:8px;
+  font-weight:bold;
+  background:#eee;
+"></div>
 
 <div style="padding:15px;">
 <label>¿Quién eres?</label>
@@ -127,6 +133,12 @@ footer{
   <button onclick="mostrar('ultima')" id="tabUltima">Última jornada</button>
   <button onclick="mostrar('historico')" id="tabHistorico">Histórico</button>
   <button onclick="mostrar('clasificacion')" id="tabClasificacion">Clasificación</button>
+</div>
+  
+  <!-- BOTONES ADMIN -->
+<div style="text-align:center; margin:10px 0;">
+  <button onclick="cerrarVotacionesAdmin()">Cerrar votaciones</button>
+  <button onclick="cerrarJornadaAdmin()">Cerrar jornada</button>
 </div>
 
 <!-- ================= VOTAR ================= -->
@@ -163,7 +175,7 @@ footer{
 <footer>Sistema automático de quinielas</footer>
 
 <script>
-const URL="https://script.google.com/macros/s/AKfycbywPvmf8QAsPNbpkAvvCRzK_VlXERGK9ApzoVT3EMZmL2tNlaj2whxFRYfi7aATqN5O/exec";
+const URL="https://script.google.com/macros/s/AKfycbyWndKiIZ1C7EoQOqOxjPscMbwQj1LmO39bT1DeNImP_Kga6Ub_Sy5sETl8Q678kdBd/exec";
 
 /* ================= NAVEGACION ================= */
 function mostrar(id){
@@ -397,6 +409,54 @@ window.enviarVoto = function(){
       alert("Error enviando voto");
     });
 };
+/* ================= ESTADO ================= */
+function cargarEstado(){
+  fetch(URL+"?action=estado")
+  .then(r=>r.json())
+  .then(d=>{
+    const banner=document.getElementById("estadoBanner");
+
+    if(d.estado==="abierta"){
+      banner.innerHTML="🟢 Votaciones abiertas";
+      banner.style.background="#d4edda";
+      habilitarVoto(true);
+    }
+
+    if(d.estado==="votaciones_cerradas"){
+      banner.innerHTML="🔒 Votaciones cerradas - Quiniela enviada";
+      banner.style.background="#f8d7da";
+      habilitarVoto(false);
+    }
+  });
+}
+
+function habilitarVoto(permitido){
+  const boton=document.querySelector("#votar button");
+  if(boton){
+    boton.disabled=!permitido;
+    boton.style.opacity=permitido?1:0.5;
+  }
+}
+
+/* ================= ADMIN ================= */
+function cerrarVotacionesAdmin(){
+  fetch(URL+"?action=cerrarVotaciones")
+  .then(r=>r.json())
+  .then(d=>{
+    alert(d.mensaje || "Votaciones cerradas");
+    cargarEstado();
+  });
+}
+
+function cerrarJornadaAdmin(){
+  fetch(URL+"?action=cerrarJornada")
+  .then(r=>r.text())
+  .then(t=>{
+    alert(t);
+    cargarEstado();
+  });
+}
+cargarEstado();
 </script>
 
 </body>
