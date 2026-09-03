@@ -2,464 +2,597 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Quiniela Premium</title>
+<title>Quiniela del Grupo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --gold:#c8a13a;
-  --dark:#1c1c1c;
-  --bg:#f4f4f4;
-  --tab:#2e2e2e;
-  --tab-active:#c8a13a;
+  --pitch:#0b6e4f;        /* verde cesped */
+  --pitch-dark:#084d38;
+  --ink:#14181b;          /* texto */
+  --paper:#fbfbf7;        /* fondo tipo boleto */
+  --line:#d9d7cc;         /* lineas finas */
+  --miss:#d2352c;         /* rojo: falta / error */
+  --ok:#0b6e4f;
+  --muted:#6b6f73;
+  --card:#ffffff;
 }
+
+*{box-sizing:border-box;}
 
 body{
   margin:0;
-  font-family:'Segoe UI',sans-serif;
-  background:var(--bg);
-  color:#222;
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
 }
 
+.wrap{max-width:560px;margin:0 auto;padding:0 0 90px;}
+
+/* ---------- Cabecera ---------- */
 header{
-  background:linear-gradient(135deg,#111,#333);
-  color:white;
-  padding:20px;
-  text-align:center;
-  font-size:22px;
-  letter-spacing:1px;
+  background:var(--pitch);
+  color:#fff;
+  padding:18px 20px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+header h1{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;
+  font-size:26px;
+  letter-spacing:.5px;
+  margin:0;
+  line-height:1;
+}
+.estado-pill{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:600;
+  font-size:13px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(255,255,255,.15);
+  white-space:nowrap;
+}
+.estado-pill.abierta{background:#eafaf1;color:var(--pitch-dark);}
+.estado-pill.cerrada{background:#fdecea;color:var(--miss);}
+
+/* ---------- Usuario ---------- */
+.userbar{
+  padding:14px 20px;
+  background:var(--card);
+  border-bottom:1px solid var(--line);
+}
+.userbar label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px;}
+select{
+  width:100%;
+  font:inherit;
+  padding:11px 12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+  color:var(--ink);
 }
 
+/* ---------- Tabs ---------- */
 .tabs{
   display:flex;
-  background:var(--tab);
+  gap:4px;
+  padding:12px 20px 0;
+  background:var(--card);
+  border-bottom:1px solid var(--line);
 }
-
 .tabs button{
   flex:1;
-  padding:12px;
-  border:none;
-  background:var(--tab);
-  color:white;
+  font-family:'Barlow Condensed',sans-serif;
   font-weight:600;
+  font-size:15px;
+  padding:11px 4px;
+  border:none;
+  background:transparent;
+  color:var(--muted);
+  border-bottom:3px solid transparent;
   cursor:pointer;
-  transition:0.3s;
 }
+.tabs button.active{color:var(--pitch);border-bottom-color:var(--pitch);}
 
-.tabs button:hover{
-  background:#444;
-}
+.tab{display:none;padding:20px;}
+.tab.active{display:block;}
+h2.sec{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;margin:0 0 4px;}
+.sub{color:var(--muted);font-size:13px;margin:0 0 16px;}
 
-.tabs button.active{
-  background:var(--tab-active);
-  color:black;
-}
-
-.tab{
-  display:none;
-  padding:20px;
-}
-
-.tab.active{
-  display:block;
-}
-
-.partido{
+/* ---------- Boleto de votacion ---------- */
+.boleto-head{
   display:grid;
-  grid-template-columns:1fr 70px;
-  gap:10px;
-  margin-bottom:8px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:15px;
-}
-
-th,td{
-  border:1px solid #ddd;
-  padding:6px;
-  text-align:center;
-}
-
-th{
-  background:#222;
-  color:white;
-}
-
-tr:nth-child(even){
-  background:#f2f2f2;
-}
-
-.doble{
-  color:var(--gold);
-  font-weight:bold;
-}
-
-.pleno-box{
-  margin-top:15px;
-  padding:12px;
-  background:#fff7e0;
-  border-left:5px solid var(--gold);
-}
-
-footer{
-  text-align:center;
-  padding:15px;
+  grid-template-columns:1fr 132px;
+  align-items:center;
+  padding:0 2px 8px;
+  color:var(--muted);
   font-size:12px;
-  color:#666;
 }
+.boleto-head .cols{
+  display:grid;grid-template-columns:repeat(3,1fr);text-align:center;
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;color:var(--ink);
+}
+.match{
+  display:grid;
+  grid-template-columns:1fr 132px;
+  align-items:center;
+  gap:8px;
+  padding:9px 2px;
+  border-top:1px solid var(--line);
+}
+.match:last-of-type{border-bottom:1px solid var(--line);}
+.match-name{font-size:14px;line-height:1.25;}
+.match-no{color:var(--muted);font-family:'Barlow Condensed',sans-serif;margin-right:6px;}
+.match.falta .match-name{color:var(--miss);}
+.match.falta{border-left:3px solid var(--miss);padding-left:6px;margin-left:-9px;}
+
+.picks{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.pick{
+  font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;
+  font-size:16px;
+  padding:9px 0;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:8px;
+  cursor:pointer;
+  color:var(--ink);
+  transition:background .12s,color .12s,border-color .12s;
+}
+.pick:hover{border-color:var(--pitch);}
+.pick.selected{background:var(--pitch);border-color:var(--pitch);color:#fff;}
+
+/* ---------- Pleno ---------- */
+.pleno-box{
+  margin-top:18px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  overflow:hidden;
+}
+.pleno-title{
+  background:var(--pitch);color:#fff;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;
+  padding:9px 14px;
+}
+.pleno-row{
+  display:grid;grid-template-columns:1fr 176px;align-items:center;gap:8px;
+  padding:11px 14px;border-top:1px solid var(--line);
+}
+.pleno-row:first-of-type{border-top:none;}
+.pleno-picks{grid-template-columns:repeat(4,1fr);}
+
+/* ---------- Progreso + enviar ---------- */
+.progress{
+  margin-top:16px;display:flex;align-items:center;justify-content:space-between;
+  font-size:13px;color:var(--muted);
+}
+.progress b{color:var(--ink);font-family:'Barlow Condensed',sans-serif;font-size:16px;}
+.btn{
+  width:100%;margin-top:14px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.4px;
+  padding:14px;border:none;border-radius:12px;background:var(--pitch);color:#fff;cursor:pointer;
+}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.btn.secundario{background:#fff;color:var(--ink);border:1px solid var(--line);}
+
+/* ---------- Tablas ---------- */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px;}
+th,td{border:1px solid var(--line);padding:7px 8px;text-align:center;white-space:nowrap;}
+th{background:var(--pitch);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:600;}
+tbody tr:nth-child(even){background:#f6f6f0;}
+.quiniela-final div{padding:6px 2px;border-bottom:1px solid var(--line);font-size:14px;}
+.doble{color:var(--miss);font-weight:600;}
+.rank-1 td{background:#fff7dc;font-weight:600;}
+
+/* ---------- Admin ---------- */
+.admin{margin:24px 20px 0;border-top:1px dashed var(--line);padding-top:14px;}
+.admin-toggle{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 0;}
+.admin-panel{display:none;margin-top:10px;gap:8px;flex-direction:column;}
+.admin-panel.open{display:flex;}
+.admin-panel input{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;}
+
+/* ---------- Aviso (toast) + carga ---------- */
+#loadbar{
+  position:fixed;top:0;left:0;height:3px;width:0;background:#eac54f;
+  transition:width .3s;z-index:60;
+}
+#loadbar.on{width:90%;}
+#toast{
+  position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(120%);
+  max-width:520px;width:calc(100% - 32px);
+  background:var(--ink);color:#fff;padding:13px 16px;border-radius:12px;font-size:14px;
+  box-shadow:0 8px 24px rgba(0,0,0,.18);transition:transform .25s;z-index:70;
+}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#toast.ok{background:var(--ok);}
+#toast.err{background:var(--miss);}
+
+footer{text-align:center;padding:22px;font-size:12px;color:var(--muted);}
+.vacio{color:var(--muted);font-size:14px;padding:8px 0;}
 </style>
 </head>
 
 <body>
+<div id="loadbar"></div>
+<div class="wrap">
 
-<header>⚽ Quiniela del Grupo</header>
-  <div id="estadoBanner" style="
-  text-align:center;
-  padding:8px;
-  font-weight:bold;
-  background:#eee;
-"></div>
+  <header>
+    <h1>Quiniela del grupo</h1>
+    <span id="estadoPill" class="estado-pill">Cargando…</span>
+  </header>
 
-<div style="padding:15px;">
-<label>¿Quién eres?</label>
-<select id="usuario"></select>
+  <div class="userbar">
+    <label for="usuario">¿Quién eres?</label>
+    <select id="usuario"><option value="">Elige tu nombre</option></select>
+  </div>
+
+  <div class="tabs">
+    <button id="tabVotar" class="active" data-tab="votar">Votar</button>
+    <button id="tabUltima" data-tab="ultima">Última</button>
+    <button id="tabHistorico" data-tab="historico">Histórico</button>
+    <button id="tabClasificacion" data-tab="clasificacion">Ranking</button>
+  </div>
+
+  <!-- VOTAR -->
+  <div id="votar" class="tab active">
+    <h2 class="sec">Tu pronóstico</h2>
+    <p class="sub">Marca un signo en cada partido y el Pleno al 15.</p>
+
+    <div class="boleto-head">
+      <span>Partido</span>
+      <span class="cols"><span>1</span><span>X</span><span>2</span></span>
+    </div>
+    <div id="partidos"></div>
+
+    <div class="pleno-box">
+      <div class="pleno-title">Pleno al 15</div>
+      <div id="pleno"><div class="vacio" style="padding:12px 14px">Cargando…</div></div>
+    </div>
+
+    <div class="progress">
+      <span>Partidos: <b id="contador">0</b>/14 · Pleno: <b id="contadorPleno">0</b>/2</span>
+    </div>
+    <button id="btnEnviar" class="btn" onclick="enviarVoto()">Enviar quiniela</button>
+  </div>
+
+  <!-- ULTIMA -->
+  <div id="ultima" class="tab">
+    <h2 class="sec">Última jornada</h2>
+    <p class="sub">Quiniela consensuada del grupo y votos de cada uno.</p>
+    <div id="ultimaContenido"><div class="vacio">Cargando…</div></div>
+  </div>
+
+  <!-- HISTORICO -->
+  <div id="historico" class="tab">
+    <h2 class="sec">Histórico</h2>
+    <p class="sub">Consulta jornadas ya cerradas.</p>
+    <select id="selectorJornada"></select>
+    <div id="historicoContenido"></div>
+  </div>
+
+  <!-- CLASIFICACION -->
+  <div id="clasificacion" class="tab">
+    <h2 class="sec">Ranking general</h2>
+    <p class="sub">Puntos acumulados por acertar tu propio pronóstico.</p>
+    <div id="tablaClasificacion"><div class="vacio">Cargando…</div></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="admin">
+    <button class="admin-toggle" onclick="toggleAdmin()">⚙ Administración</button>
+    <div id="adminPanel" class="admin-panel">
+      <input id="adminPin" type="password" placeholder="PIN de administrador" autocomplete="off">
+      <button class="btn secundario" onclick="cerrarVotacionesAdmin()">Cerrar votaciones</button>
+      <button class="btn secundario" onclick="cerrarJornadaAdmin()">Cerrar jornada</button>
+    </div>
+  </div>
+
+  <footer>Sistema automático de quinielas</footer>
 </div>
 
-<div class="tabs">
-  <button onclick="mostrar('votar')" id="tabVotar" class="active">Votar</button>
-  <button onclick="mostrar('ultima')" id="tabUltima">Última jornada</button>
-  <button onclick="mostrar('historico')" id="tabHistorico">Histórico</button>
-  <button onclick="mostrar('clasificacion')" id="tabClasificacion">Clasificación</button>
-</div>
-  
-  <!-- BOTONES ADMIN -->
-<div style="text-align:center; margin:10px 0;">
-  <button onclick="cerrarVotacionesAdmin()">Cerrar votaciones</button>
-  <button onclick="cerrarJornadaAdmin()">Cerrar jornada</button>
-</div>
-
-<!-- ================= VOTAR ================= -->
-<div id="votar" class="tab active">
-  <h2>Realiza tu pronóstico</h2>
-  <div id="partidos"></div>
-
-  <h3>Pleno al 15</h3>
-  <div id="pleno"></div>
-
-  <button onclick="enviarVoto()">Enviar quiniela</button>
-</div>
-
-<!-- ================= ÚLTIMA ================= -->
-<div id="ultima" class="tab">
-  <h2>Última jornada cerrada</h2>
-  <div id="ultimaContenido"></div>
-</div>
-
-<!-- ================= HISTORICO ================= -->
-<div id="historico" class="tab">
-  <h2>Histórico de jornadas</h2>
-  <label>Selecciona jornada:</label>
-  <select id="selectorJornada"></select>
-  <div id="historicoContenido"></div>
-</div>
-
-<!-- ================= CLASIFICACION ================= -->
-<div id="clasificacion" class="tab">
-  <h2>Clasificación general</h2>
-  <div id="tablaClasificacion"></div>
-</div>
-
-<footer>Sistema automático de quinielas</footer>
+<div id="toast"></div>
 
 <script>
 const URL="https://script.google.com/macros/s/AKfycbzgdxD_rMynis_z21pFiz9q1i7THxoeXv8PHtVaEMoNP4o53_sk5J7-hubQb4M9EfHI/exec";
 
-/* ================= NAVEGACION ================= */
+/* estado local del pronostico */
+const sel = {};            // {1:'1', 2:'X', ...}
+let plenoLocal = "";
+let plenoVisit = "";
+let votacionAbierta = false;
+
+/* ---------- utilidades ---------- */
+const $ = id => document.getElementById(id);
+
+function loading(on){ $("loadbar").classList.toggle("on", on); }
+
+let toastTimer;
+function toast(msg, tipo){
+  const t = $("toast");
+  t.textContent = msg;
+  t.className = "show " + (tipo || "");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ t.className = t.className.replace("show",""); }, 3500);
+}
+
+async function apiText(qs){
+  loading(true);
+  try{
+    const r = await fetch(URL + qs);
+    return await r.text();
+  }catch(e){
+    toast("No se pudo conectar con el servidor. Revisa tu conexión.", "err");
+    throw e;
+  }finally{ loading(false); }
+}
+async function apiJson(qs){
+  loading(true);
+  try{
+    const r = await fetch(URL + qs);
+    return await r.json();
+  }catch(e){
+    toast("No se pudo conectar con el servidor. Revisa tu conexión.", "err");
+    throw e;
+  }finally{ loading(false); }
+}
+
+/* ---------- navegacion ---------- */
+document.querySelectorAll(".tabs button").forEach(b=>{
+  b.onclick = ()=>mostrar(b.dataset.tab);
+});
 function mostrar(id){
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  document.getElementById("tab"+id.charAt(0).toUpperCase()+id.slice(1)).classList.add("active");
-
+  $(id).classList.add("active");
+  document.querySelector('.tabs button[data-tab="'+id+'"]').classList.add("active");
   if(id==="ultima") cargarUltima();
   if(id==="historico") cargarHistorico();
   if(id==="clasificacion") cargarClasificacion();
 }
 
-/* ================= USUARIOS ================= */
-fetch(URL+"?action=usuarios")
-.then(r=>r.json())
-.then(u=>{
-  usuario.innerHTML="<option value=''>--</option>";
-  u.forEach(n=>usuario.innerHTML+=`<option>${n}</option>`);
-});
+/* ---------- carga inicial ---------- */
+apiJson("?action=usuarios").then(u=>{
+  const s = $("usuario");
+  u.forEach(n=> s.innerHTML += '<option>'+n+'</option>');
+}).catch(()=>{});
 
-/* ================= PARTIDOS ================= */
-fetch(URL+"?action=partidos")
-.then(r=>r.json())
-.then(p=>{
-  partidos.innerHTML="";
+apiJson("?action=partidos").then(p=>{
+  const cont = $("partidos");
+  cont.innerHTML = "";
   p.forEach(x=>{
-    partidos.innerHTML+=`
-      <div class="partido">
-        <span>${x.nombre}</span>
-        <select name="p${x.id}">
-          <option></option><option>1</option><option>X</option><option>2</option>
-        </select>
-      </div>`;
+    const row = document.createElement("div");
+    row.className = "match";
+    row.dataset.id = x.id;
+    row.innerHTML =
+      '<div class="match-name"><span class="match-no">'+x.id+'</span>'+x.nombre+'</div>'+
+      '<div class="picks">'+
+        signo(x.id,"1")+signo(x.id,"X")+signo(x.id,"2")+
+      '</div>';
+    cont.appendChild(row);
   });
-});
+}).catch(()=>{});
 
-/* ================= PLENO ================= */
-fetch(URL+"?action=pleno")
-.then(r=>r.json())
-.then(p=>{
-  pleno.innerHTML=`
-    <div class="partido">
-      <span>${p.local}</span>
-      <select id="pl15_local">
-        <option></option><option>0</option><option>1</option><option>2</option><option>M</option>
-      </select>
-    </div>
-    <div class="partido">
-      <span>${p.visitante}</span>
-      <select id="pl15_visitante">
-        <option></option><option>0</option><option>1</option><option>2</option><option>M</option>
-      </select>
-    </div>`;
-});
-
-/* ================= ULTIMA COMPLETA ================= */
-function cargarUltima(){
-
-  fetch(URL+"?action=quinielaActual")
-  .then(r=>r.json())
-  .then(d=>{
-
-    if(!d || !d.quiniela){
-      ultimaContenido.innerHTML="No hay quiniela calculada.";
-      return;
-    }
-
-    let html="<h3>Votos</h3>";
-    html+=renderTablaVotos(d.votos, d.partidosNombres);
-
-    html+="<h3>Quiniela final</h3>";
-    html+=renderQuiniela(d.quiniela, d.partidosNombres);
-
-    html+="<div class='pleno-box'><strong>Pleno al 15</strong><br>";
-    html+=d.pleno.localNombre+" "+d.pleno.localResultado+
-          " - "+
-          d.pleno.visitanteResultado+" "+d.pleno.visitanteNombre;
-    html+="</div>";
-
-    ultimaContenido.innerHTML=html;
-  });
+function signo(id,val){
+  return '<button type="button" class="pick" onclick="elegir('+id+',\''+val+'\',this)">'+val+'</button>';
 }
 
-/* ================= HISTORICO ================= */
-function cargarHistorico(){
-  fetch(URL+"?action=historico")
-  .then(r=>r.json())
-  .then(data=>{
-    if(!data.length){
-      historicoContenido.innerHTML="No hay jornadas guardadas.";
-      return;
-    }
+apiJson("?action=pleno").then(p=>{
+  $("pleno").innerHTML =
+    '<div class="pleno-row"><div>'+p.local+'</div><div class="picks pleno-picks">'+
+      plenoBtn("L","0")+plenoBtn("L","1")+plenoBtn("L","2")+plenoBtn("L","M")+
+    '</div></div>'+
+    '<div class="pleno-row"><div>'+p.visitante+'</div><div class="picks pleno-picks">'+
+      plenoBtn("V","0")+plenoBtn("V","1")+plenoBtn("V","2")+plenoBtn("V","M")+
+    '</div></div>';
+}).catch(()=>{});
 
-    const jornadas=[...new Set(data.map(r=>r[0]))];
-    selectorJornada.innerHTML="";
-    jornadas.forEach(j=>{
-      selectorJornada.innerHTML+=`<option value="${j}">Jornada ${j}</option>`;
-    });
-
-    selectorJornada.onchange=()=>mostrarJornada(data);
-    selectorJornada.onchange();
-  });
+function plenoBtn(lado,val){
+  return '<button type="button" class="pick" onclick="elegirPleno(\''+lado+'\',\''+val+'\',this)">'+val+'</button>';
 }
 
-function mostrarJornada(data){
-  const j=selectorJornada.value;
-  const fila=data.find(r=>r[0]==j);
-  if(!fila) return;
-
-  const obj=JSON.parse(fila[3]);
-
-  let html="<h3>Votos</h3>";
- html+=renderTablaVotos(obj.votos, obj.partidosNombres);
-
-  html+="<h3>Quiniela final</h3>";
-  html+=renderQuiniela(obj.quiniela, obj.partidosNombres);
-  html+="<div class='pleno-box'><strong>Pleno al 15</strong><br>";
-  html+=obj.pleno.localNombre+" "+obj.pleno.localResultado+
-        " - "+
-        obj.pleno.visitanteResultado+" "+obj.pleno.visitanteNombre;
-  html+="</div>";
-
-  historicoContenido.innerHTML=html;
+/* ---------- seleccion ---------- */
+function elegir(id,val,btn){
+  sel[id] = val;
+  btn.parentNode.querySelectorAll(".pick").forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  btn.closest(".match").classList.remove("falta");
+  actualizarContador();
+}
+function elegirPleno(lado,val,btn){
+  if(lado==="L") plenoLocal = val; else plenoVisit = val;
+  btn.parentNode.querySelectorAll(".pick").forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  actualizarContador();
+}
+function actualizarContador(){
+  let n=0; for(let i=1;i<=14;i++) if(sel[i]) n++;
+  $("contador").textContent = n;
+  $("contadorPleno").textContent = (plenoLocal?1:0)+(plenoVisit?1:0);
 }
 
-/* ================= TABLA VOTOS ================= */
-function renderTablaVotos(votos, partidosNombres){
-  const usuarios = Object.keys(votos);
-  let html = "<table><tr><th>Partido</th>";
-  usuarios.forEach(u => html += "<th>" + u + "</th>");
-  html += "</tr>";
+/* ---------- enviar voto ---------- */
+async function enviarVoto(){
+  const usuario = $("usuario").value;
+  if(!usuario){ toast("Primero elige tu nombre arriba.", "err"); return; }
+  if(!votacionAbierta){ toast("Las votaciones están cerradas.", "err"); return; }
 
-  for(let i = 1; i <= 14; i++){
-    const nombre = (partidosNombres && partidosNombres[i-1])
-      ? partidosNombres[i-1]
-      : "Partido " + i;
-
-    html += "<tr><td>" + nombre + "</td>";
-    usuarios.forEach(u => {
-      html += "<td>" + (votos[u][i] || "") + "</td>";
-    });
-    html += "</tr>";
+  // marcar y contar los que faltan
+  let faltan = 0;
+  for(let i=1;i<=14;i++){
+    const row = document.querySelector('.match[data-id="'+i+'"]');
+    if(!sel[i]){ row.classList.add("falta"); faltan++; }
+    else row.classList.remove("falta");
   }
-
-  html += "<tr><td>Pleno L</td>";
-  usuarios.forEach(u => html += "<td>" + (votos[u]["PL15_LOCAL"] || "") + "</td>");
-  html += "</tr>";
-
-  html += "<tr><td>Pleno V</td>";
-  usuarios.forEach(u => html += "<td>" + (votos[u]["PL15_VISIT"] || "") + "</td>");
-  html += "</tr>";
-
-  html += "</table>";
-  return html;
-}
-
-/* ================= QUINIELA ================= */
-function renderQuiniela(q, partidosNombres){
-  let html = "";
-
-  q.partidos.forEach(p => {
-    const nombre = (partidosNombres && partidosNombres[p.partido - 1])
-      ? partidosNombres[p.partido - 1]
-      : "Partido " + p.partido;
-
-    const esDoble = q.dobles.includes(p.partido);
-
-    html += `<div>
-      ${nombre} → 
-      <span class="${esDoble ? 'doble' : ''}">
-        ${esDoble ? p.principal + " / " + p.segundo : p.principal}
-      </span>
-    </div>`;
-  });
-
-  return html;
-}
-
-/* ================= CLASIFICACION ================= */
-function cargarClasificacion(){
-  fetch(URL+"?action=clasificacion")
-  .then(r=>r.json())
-  .then(d=>{
-    let html="<table><tr><th>🏆</th><th>Usuario</th><th>Puntos</th></tr>";
-    d.slice(1).sort((a,b)=>b[1]-a[1]).forEach((r,i)=>{
-      html+=`<tr>
-        <td>${i===0?"🥇":i===1?"🥈":i===2?"🥉":""}</td>
-        <td>${r[0]}</td>
-        <td>${r[1]}</td>
-      </tr>`;
-    });
-    html+="</table>";
-    tablaClasificacion.innerHTML=html;
-  });
-}
-  /* ================= ENVIAR VOTO ================= */
-window.enviarVoto = function(){
-
-  const usuarioSelect = document.getElementById("usuario");
-  const usuario = usuarioSelect.value;
-
-  if(!usuario){
-    alert("Selecciona usuario");
-    return;
-  }
+  if(faltan>0){ toast("Te faltan "+faltan+" partido(s) por marcar.", "err"); return; }
+  if(!plenoLocal || !plenoVisit){ toast("Completa el Pleno al 15 (local y visitante).", "err"); return; }
 
   const params = new URLSearchParams();
   params.append("usuario", usuario);
+  for(let i=1;i<=14;i++) params.append("p"+i, sel[i]);
+  params.append("pl15_local", plenoLocal);
+  params.append("pl15_visitante", plenoVisit);
 
-  document.querySelectorAll("select[name^='p']").forEach(select=>{
-    params.append(select.name, select.value);
-  });
-
-  const plenoLocal = document.getElementById("pl15_local");
-  const plenoVisit = document.getElementById("pl15_visitante");
-
-  if(!plenoLocal || !plenoVisit){
-    alert("Error cargando pleno al 15");
-    return;
+  $("btnEnviar").disabled = true;
+  try{
+    const resp = await apiText("?"+params.toString());
+    if(resp.indexOf("OK")===0 || resp==="OK"){
+      toast("¡Quiniela enviada! Suerte 🍀", "ok");
+    }else{
+      toast(resp, "err");
+      $("btnEnviar").disabled = false;
+    }
+  }catch(e){
+    $("btnEnviar").disabled = false;
   }
+}
 
-  params.append("pl15_local", plenoLocal.value);
-  params.append("pl15_visitante", plenoVisit.value);
+/* ---------- ultima jornada ---------- */
+async function cargarUltima(){
+  const c = $("ultimaContenido");
+  c.innerHTML = '<div class="vacio">Cargando…</div>';
+  try{
+    const d = await apiJson("?action=quinielaActual");
+    if(!d || !d.quiniela){ c.innerHTML = '<div class="vacio">Aún no hay quiniela calculada. Se genera al cerrar votaciones.</div>'; return; }
+    let html = "<h3 class='sub' style='margin-top:4px'>Votos del grupo</h3>";
+    html += '<div class="scroll">'+tablaVotos(d.votos, d.partidosNombres)+"</div>";
+    html += "<h3 class='sub'>Quiniela final</h3>";
+    html += '<div class="quiniela-final">'+quinielaFinal(d.quiniela, d.partidosNombres)+"</div>";
+    html += cajaPleno(d.pleno);
+    c.innerHTML = html;
+  }catch(e){ c.innerHTML = '<div class="vacio">No se pudo cargar.</div>'; }
+}
 
-  fetch(URL + "?" + params.toString())
-    .then(r=>r.text())
-    .then(response=>{
-      alert(response);
-    })
-    .catch(error=>{
-      console.error(error);
-      alert("Error enviando voto");
+/* ---------- historico ---------- */
+async function cargarHistorico(){
+  try{
+    const data = await apiJson("?action=historico");
+    const sel = $("selectorJornada");
+    if(!data.length){ $("historicoContenido").innerHTML = '<div class="vacio">No hay jornadas guardadas todavía.</div>'; sel.innerHTML=""; return; }
+    const jornadas = [...new Set(data.map(r=>r[0]))];
+    sel.innerHTML = "";
+    jornadas.forEach(j=> sel.innerHTML += '<option value="'+j+'">Jornada '+j+'</option>');
+    sel.onchange = ()=>mostrarJornada(data);
+    sel.onchange();
+  }catch(e){ $("historicoContenido").innerHTML = '<div class="vacio">No se pudo cargar.</div>'; }
+}
+function mostrarJornada(data){
+  const j = $("selectorJornada").value;
+  const fila = data.find(r=>r[0]==j);
+  if(!fila) return;
+  const obj = JSON.parse(fila[3]);
+  let html = "<h3 class='sub' style='margin-top:12px'>Votos del grupo</h3>";
+  html += '<div class="scroll">'+tablaVotos(obj.votos, obj.partidosNombres)+"</div>";
+  html += "<h3 class='sub'>Quiniela final</h3>";
+  html += '<div class="quiniela-final">'+quinielaFinal(obj.quiniela, obj.partidosNombres)+"</div>";
+  html += cajaPleno(obj.pleno);
+  $("historicoContenido").innerHTML = html;
+}
+
+/* ---------- clasificacion ---------- */
+async function cargarClasificacion(){
+  const c = $("tablaClasificacion");
+  c.innerHTML = '<div class="vacio">Cargando…</div>';
+  try{
+    const d = await apiJson("?action=clasificacion");
+    const filas = d.slice(1).filter(r=>r[0]).sort((a,b)=>b[1]-a[1]);
+    if(!filas.length){ c.innerHTML = '<div class="vacio">Sin puntuaciones todavía.</div>'; return; }
+    let html = '<div class="scroll"><table><tr><th>#</th><th>Jugador</th><th>Puntos</th></tr>';
+    filas.forEach((r,i)=>{
+      const medalla = i===0?"🥇":i===1?"🥈":i===2?"🥉":(i+1);
+      html += '<tr class="'+(i===0?"rank-1":"")+'"><td>'+medalla+'</td><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>';
     });
-};
-/* ================= ESTADO ================= */
-function cargarEstado(){
-  fetch(URL+"?action=estado")
-  .then(r=>r.json())
-  .then(d=>{
-    const banner=document.getElementById("estadoBanner");
-
-    if(d.estado==="abierta"){
-      banner.innerHTML="🟢 Votaciones abiertas";
-      banner.style.background="#d4edda";
-      habilitarVoto(true);
-    }
-
-    if(d.estado==="votaciones_cerradas"){
-      banner.innerHTML="🔒 Votaciones cerradas - Quiniela enviada";
-      banner.style.background="#f8d7da";
-      habilitarVoto(false);
-    }
-  });
+    html += "</table></div>";
+    c.innerHTML = html;
+  }catch(e){ c.innerHTML = '<div class="vacio">No se pudo cargar.</div>'; }
 }
 
-function habilitarVoto(permitido){
-  const boton=document.querySelector("#votar button");
-  if(boton){
-    boton.disabled=!permitido;
-    boton.style.opacity=permitido?1:0.5;
+/* ---------- render compartido ---------- */
+function tablaVotos(votos, nombres){
+  const usuarios = Object.keys(votos);
+  let html = "<table><tr><th>Partido</th>";
+  usuarios.forEach(u=> html += "<th>"+u+"</th>");
+  html += "</tr>";
+  for(let i=1;i<=14;i++){
+    const nombre = (nombres && nombres[i-1]) ? nombres[i-1] : "Partido "+i;
+    html += "<tr><td style='text-align:left'>"+nombre+"</td>";
+    usuarios.forEach(u=> html += "<td>"+(votos[u][i]||"")+"</td>");
+    html += "</tr>";
   }
+  html += "<tr><td style='text-align:left'>Pleno L</td>";
+  usuarios.forEach(u=> html += "<td>"+(votos[u]["PL15_LOCAL"]||"")+"</td>");
+  html += "</tr><tr><td style='text-align:left'>Pleno V</td>";
+  usuarios.forEach(u=> html += "<td>"+(votos[u]["PL15_VISIT"]||"")+"</td>");
+  html += "</tr></table>";
+  return html;
+}
+function quinielaFinal(q, nombres){
+  let html = "";
+  q.partidos.forEach(p=>{
+    const nombre = (nombres && nombres[p.partido-1]) ? nombres[p.partido-1] : "Partido "+p.partido;
+    const esDoble = q.dobles.includes(p.partido);
+    html += "<div><span class='match-no'>"+p.partido+"</span>"+nombre+" → "+
+            "<span class='"+(esDoble?"doble":"")+"'>"+
+            (esDoble ? p.principal+" / "+p.segundo : p.principal)+"</span></div>";
+  });
+  return html;
+}
+function cajaPleno(p){
+  if(!p) return "";
+  return "<div class='pleno-box' style='margin-top:14px'><div class='pleno-title'>Pleno al 15</div>"+
+    "<div class='pleno-row'><div>"+p.localNombre+"</div><div style='text-align:right;font-weight:600'>"+p.localResultado+"</div></div>"+
+    "<div class='pleno-row'><div>"+p.visitanteNombre+"</div><div style='text-align:right;font-weight:600'>"+p.visitanteResultado+"</div></div></div>";
 }
 
-/* ================= ADMIN ================= */
-function cerrarVotacionesAdmin(){
-  fetch(URL+"?action=cerrarVotaciones")
-  .then(r=>r.json())
-  .then(d=>{
-    alert(d.mensaje || "Votaciones cerradas");
-    cargarEstado();
-  });
+/* ---------- estado ---------- */
+async function cargarEstado(){
+  try{
+    const d = await apiJson("?action=estado");
+    const pill = $("estadoPill");
+    const abierta = String(d.estado).trim().toLowerCase()==="abierta";
+    votacionAbierta = abierta;
+    if(abierta){
+      pill.textContent = "🟢 Votaciones abiertas";
+      pill.className = "estado-pill abierta";
+    }else{
+      pill.textContent = "🔒 Votaciones cerradas";
+      pill.className = "estado-pill cerrada";
+    }
+    $("btnEnviar").disabled = !abierta;
+  }catch(e){}
 }
 
-function cerrarJornadaAdmin(){
-  fetch(URL+"?action=cerrarJornada")
-  .then(r=>r.text())
-  .then(t=>{
-    alert(t);
+/* ---------- admin ---------- */
+function toggleAdmin(){ $("adminPanel").classList.toggle("open"); }
+
+async function cerrarVotacionesAdmin(){
+  const pin = $("adminPin").value;
+  if(!pin){ toast("Escribe el PIN de administrador.", "err"); return; }
+  try{
+    const d = await apiJson("?action=cerrarVotaciones&pin="+encodeURIComponent(pin));
+    toast(d.mensaje || "Hecho.", (d.mensaje&&d.mensaje.indexOf("cerradas")>=0)?"ok":"err");
     cargarEstado();
-  });
+  }catch(e){}
 }
+async function cerrarJornadaAdmin(){
+  const pin = $("adminPin").value;
+  if(!pin){ toast("Escribe el PIN de administrador.", "err"); return; }
+  try{
+    const t = await apiText("?action=cerrarJornada&pin="+encodeURIComponent(pin));
+    toast(t, t.indexOf("CERRADA")>=0 ? "ok" : "err");
+    cargarEstado();
+  }catch(e){}
+}
+
 cargarEstado();
 </script>
-
 </body>
 </html>
