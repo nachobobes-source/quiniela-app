@@ -10,96 +10,32 @@
 
 <style>
 :root{
-  --pitch:#0b6e4f;        /* verde cesped */
+  --pitch:#0b6e4f;
   --pitch-dark:#084d38;
-  --ink:#14181b;          /* texto */
-  --paper:#fbfbf7;        /* fondo tipo boleto */
-  --line:#d9d7cc;         /* lineas finas */
-  --miss:#d2352c;         /* rojo: falta / error */
+  --ink:#14181b;
+  --paper:#fbfbf7;
+  --line:#d9d7cc;
+  --miss:#d2352c;
   --ok:#0b6e4f;
   --muted:#6b6f73;
   --card:#ffffff;
 }
-
 *{box-sizing:border-box;}
-
-body{
-  margin:0;
-  font-family:'Inter',system-ui,sans-serif;
-  background:var(--paper);
-  color:var(--ink);
-  -webkit-font-smoothing:antialiased;
-}
-
+body{margin:0;font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;}
 .wrap{max-width:560px;margin:0 auto;padding:0 0 90px;}
 
-/* ---------- Cabecera ---------- */
-header{
-  background:var(--pitch);
-  color:#fff;
-  padding:18px 20px 16px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-header h1{
-  font-family:'Barlow Condensed',sans-serif;
-  font-weight:700;
-  font-size:26px;
-  letter-spacing:.5px;
-  margin:0;
-  line-height:1;
-}
-.estado-pill{
-  font-family:'Barlow Condensed',sans-serif;
-  font-weight:600;
-  font-size:13px;
-  padding:6px 10px;
-  border-radius:999px;
-  background:rgba(255,255,255,.15);
-  white-space:nowrap;
-}
+header{background:var(--pitch);color:#fff;padding:18px 20px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+header h1{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:26px;letter-spacing:.5px;margin:0;line-height:1;}
+.estado-pill{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.15);white-space:nowrap;}
 .estado-pill.abierta{background:#eafaf1;color:var(--pitch-dark);}
 .estado-pill.cerrada{background:#fdecea;color:var(--miss);}
 
-/* ---------- Usuario ---------- */
-.userbar{
-  padding:14px 20px;
-  background:var(--card);
-  border-bottom:1px solid var(--line);
-}
+.userbar{padding:14px 20px;background:var(--card);border-bottom:1px solid var(--line);}
 .userbar label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px;}
-select{
-  width:100%;
-  font:inherit;
-  padding:11px 12px;
-  border:1px solid var(--line);
-  border-radius:10px;
-  background:#fff;
-  color:var(--ink);
-}
+select{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);}
 
-/* ---------- Tabs ---------- */
-.tabs{
-  display:flex;
-  gap:4px;
-  padding:12px 20px 0;
-  background:var(--card);
-  border-bottom:1px solid var(--line);
-}
-.tabs button{
-  flex:1;
-  font-family:'Barlow Condensed',sans-serif;
-  font-weight:600;
-  font-size:15px;
-  padding:11px 4px;
-  border:none;
-  background:transparent;
-  color:var(--muted);
-  border-bottom:3px solid transparent;
-  cursor:pointer;
-}
+.tabs{display:flex;gap:4px;padding:12px 20px 0;background:var(--card);border-bottom:1px solid var(--line);}
+.tabs button{flex:1;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;padding:11px 4px;border:none;background:transparent;color:var(--muted);border-bottom:3px solid transparent;cursor:pointer;}
 .tabs button.active{color:var(--pitch);border-bottom-color:var(--pitch);}
 
 .tab{display:none;padding:20px;}
@@ -107,27 +43,9 @@ select{
 h2.sec{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;margin:0 0 4px;}
 .sub{color:var(--muted);font-size:13px;margin:0 0 16px;}
 
-/* ---------- Boleto de votacion ---------- */
-.boleto-head{
-  display:grid;
-  grid-template-columns:1fr 132px;
-  align-items:center;
-  padding:0 2px 8px;
-  color:var(--muted);
-  font-size:12px;
-}
-.boleto-head .cols{
-  display:grid;grid-template-columns:repeat(3,1fr);text-align:center;
-  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;color:var(--ink);
-}
-.match{
-  display:grid;
-  grid-template-columns:1fr 132px;
-  align-items:center;
-  gap:8px;
-  padding:9px 2px;
-  border-top:1px solid var(--line);
-}
+.boleto-head{display:grid;grid-template-columns:1fr 132px;align-items:center;padding:0 2px 8px;color:var(--muted);font-size:12px;}
+.boleto-head .cols{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;color:var(--ink);}
+.match{display:grid;grid-template-columns:1fr 132px;align-items:center;gap:8px;padding:9px 2px;border-top:1px solid var(--line);}
 .match:last-of-type{border-bottom:1px solid var(--line);}
 .match-name{font-size:14px;line-height:1.25;}
 .match-no{color:var(--muted);font-family:'Barlow Condensed',sans-serif;margin-right:6px;}
@@ -135,55 +53,22 @@ h2.sec{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;
 .match.falta{border-left:3px solid var(--miss);padding-left:6px;margin-left:-9px;}
 
 .picks{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
-.pick{
-  font-family:'Barlow Condensed',sans-serif;
-  font-weight:700;
-  font-size:16px;
-  padding:9px 0;
-  border:1px solid var(--line);
-  background:#fff;
-  border-radius:8px;
-  cursor:pointer;
-  color:var(--ink);
-  transition:background .12s,color .12s,border-color .12s;
-}
+.pick{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;padding:9px 0;border:1px solid var(--line);background:#fff;border-radius:8px;cursor:pointer;color:var(--ink);transition:background .12s,color .12s,border-color .12s;}
 .pick:hover{border-color:var(--pitch);}
 .pick.selected{background:var(--pitch);border-color:var(--pitch);color:#fff;}
 
-/* ---------- Pleno ---------- */
-.pleno-box{
-  margin-top:18px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  overflow:hidden;
-}
-.pleno-title{
-  background:var(--pitch);color:#fff;
-  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;
-  padding:9px 14px;
-}
-.pleno-row{
-  display:grid;grid-template-columns:1fr 176px;align-items:center;gap:8px;
-  padding:11px 14px;border-top:1px solid var(--line);
-}
+.pleno-box{margin-top:18px;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+.pleno-title{background:var(--pitch);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;padding:9px 14px;}
+.pleno-row{display:grid;grid-template-columns:1fr 176px;align-items:center;gap:8px;padding:11px 14px;border-top:1px solid var(--line);}
 .pleno-row:first-of-type{border-top:none;}
 .pleno-picks{grid-template-columns:repeat(4,1fr);}
 
-/* ---------- Progreso + enviar ---------- */
-.progress{
-  margin-top:16px;display:flex;align-items:center;justify-content:space-between;
-  font-size:13px;color:var(--muted);
-}
+.progress{margin-top:16px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--muted);}
 .progress b{color:var(--ink);font-family:'Barlow Condensed',sans-serif;font-size:16px;}
-.btn{
-  width:100%;margin-top:14px;
-  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.4px;
-  padding:14px;border:none;border-radius:12px;background:var(--pitch);color:#fff;cursor:pointer;
-}
+.btn{width:100%;margin-top:14px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.4px;padding:14px;border:none;border-radius:12px;background:var(--pitch);color:#fff;cursor:pointer;}
 .btn:disabled{opacity:.45;cursor:not-allowed;}
 .btn.secundario{background:#fff;color:var(--ink);border:1px solid var(--line);}
 
-/* ---------- Tablas ---------- */
 .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px;}
 th,td{border:1px solid var(--line);padding:7px 8px;text-align:center;white-space:nowrap;}
@@ -193,25 +78,16 @@ tbody tr:nth-child(even){background:#f6f6f0;}
 .doble{color:var(--miss);font-weight:600;}
 .rank-1 td{background:#fff7dc;font-weight:600;}
 
-/* ---------- Admin ---------- */
 .admin{margin:24px 20px 0;border-top:1px dashed var(--line);padding-top:14px;}
 .admin-toggle{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 0;}
 .admin-panel{display:none;margin-top:10px;gap:8px;flex-direction:column;}
 .admin-panel.open{display:flex;}
 .admin-panel input{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:10px;}
+#importInfo{font-size:13px;color:var(--muted);word-break:break-word;}
 
-/* ---------- Aviso (toast) + carga ---------- */
-#loadbar{
-  position:fixed;top:0;left:0;height:3px;width:0;background:#eac54f;
-  transition:width .3s;z-index:60;
-}
+#loadbar{position:fixed;top:0;left:0;height:3px;width:0;background:#eac54f;transition:width .3s;z-index:60;}
 #loadbar.on{width:90%;}
-#toast{
-  position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(120%);
-  max-width:520px;width:calc(100% - 32px);
-  background:var(--ink);color:#fff;padding:13px 16px;border-radius:12px;font-size:14px;
-  box-shadow:0 8px 24px rgba(0,0,0,.18);transition:transform .25s;z-index:70;
-}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(120%);max-width:520px;width:calc(100% - 32px);background:var(--ink);color:#fff;padding:13px 16px;border-radius:12px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.18);transition:transform .25s;z-index:70;}
 #toast.show{transform:translateX(-50%) translateY(0);}
 #toast.ok{background:var(--ok);}
 #toast.err{background:var(--miss);}
@@ -291,6 +167,8 @@ footer{text-align:center;padding:22px;font-size:12px;color:var(--muted);}
     <button class="admin-toggle" onclick="toggleAdmin()">⚙ Administración</button>
     <div id="adminPanel" class="admin-panel">
       <input id="adminPin" type="password" placeholder="PIN de administrador" autocomplete="off">
+      <button class="btn secundario" onclick="importarResultadosAdmin()">Importar resultados (API)</button>
+      <div id="importInfo"></div>
       <button class="btn secundario" onclick="cerrarVotacionesAdmin()">Cerrar votaciones</button>
       <button class="btn secundario" onclick="cerrarJornadaAdmin()">Cerrar jornada</button>
     </div>
@@ -304,15 +182,12 @@ footer{text-align:center;padding:22px;font-size:12px;color:var(--muted);}
 <script>
 const URL="https://script.google.com/macros/s/AKfycbzgdxD_rMynis_z21pFiz9q1i7THxoeXv8PHtVaEMoNP4o53_sk5J7-hubQb4M9EfHI/exec";
 
-/* estado local del pronostico */
-const sel = {};            // {1:'1', 2:'X', ...}
+const sel = {};
 let plenoLocal = "";
 let plenoVisit = "";
 let votacionAbierta = false;
 
-/* ---------- utilidades ---------- */
 const $ = id => document.getElementById(id);
-
 function loading(on){ $("loadbar").classList.toggle("on", on); }
 
 let toastTimer;
@@ -321,34 +196,23 @@ function toast(msg, tipo){
   t.textContent = msg;
   t.className = "show " + (tipo || "");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>{ t.className = t.className.replace("show",""); }, 3500);
+  toastTimer = setTimeout(()=>{ t.className = t.className.replace("show",""); }, 3800);
 }
 
 async function apiText(qs){
   loading(true);
-  try{
-    const r = await fetch(URL + qs);
-    return await r.text();
-  }catch(e){
-    toast("No se pudo conectar con el servidor. Revisa tu conexión.", "err");
-    throw e;
-  }finally{ loading(false); }
+  try{ const r = await fetch(URL + qs); return await r.text(); }
+  catch(e){ toast("No se pudo conectar con el servidor. Revisa tu conexión.", "err"); throw e; }
+  finally{ loading(false); }
 }
 async function apiJson(qs){
   loading(true);
-  try{
-    const r = await fetch(URL + qs);
-    return await r.json();
-  }catch(e){
-    toast("No se pudo conectar con el servidor. Revisa tu conexión.", "err");
-    throw e;
-  }finally{ loading(false); }
+  try{ const r = await fetch(URL + qs); return await r.json(); }
+  catch(e){ toast("No se pudo conectar con el servidor. Revisa tu conexión.", "err"); throw e; }
+  finally{ loading(false); }
 }
 
-/* ---------- navegacion ---------- */
-document.querySelectorAll(".tabs button").forEach(b=>{
-  b.onclick = ()=>mostrar(b.dataset.tab);
-});
+document.querySelectorAll(".tabs button").forEach(b=>{ b.onclick = ()=>mostrar(b.dataset.tab); });
 function mostrar(id){
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
@@ -359,7 +223,6 @@ function mostrar(id){
   if(id==="clasificacion") cargarClasificacion();
 }
 
-/* ---------- carga inicial ---------- */
 apiJson("?action=usuarios").then(u=>{
   const s = $("usuario");
   u.forEach(n=> s.innerHTML += '<option>'+n+'</option>');
@@ -374,9 +237,7 @@ apiJson("?action=partidos").then(p=>{
     row.dataset.id = x.id;
     row.innerHTML =
       '<div class="match-name"><span class="match-no">'+x.id+'</span>'+x.nombre+'</div>'+
-      '<div class="picks">'+
-        signo(x.id,"1")+signo(x.id,"X")+signo(x.id,"2")+
-      '</div>';
+      '<div class="picks">'+ signo(x.id,"1")+signo(x.id,"X")+signo(x.id,"2") +'</div>';
     cont.appendChild(row);
   });
 }).catch(()=>{});
@@ -388,18 +249,15 @@ function signo(id,val){
 apiJson("?action=pleno").then(p=>{
   $("pleno").innerHTML =
     '<div class="pleno-row"><div>'+p.local+'</div><div class="picks pleno-picks">'+
-      plenoBtn("L","0")+plenoBtn("L","1")+plenoBtn("L","2")+plenoBtn("L","M")+
-    '</div></div>'+
+      plenoBtn("L","0")+plenoBtn("L","1")+plenoBtn("L","2")+plenoBtn("L","M")+'</div></div>'+
     '<div class="pleno-row"><div>'+p.visitante+'</div><div class="picks pleno-picks">'+
-      plenoBtn("V","0")+plenoBtn("V","1")+plenoBtn("V","2")+plenoBtn("V","M")+
-    '</div></div>';
+      plenoBtn("V","0")+plenoBtn("V","1")+plenoBtn("V","2")+plenoBtn("V","M")+'</div></div>';
 }).catch(()=>{});
 
 function plenoBtn(lado,val){
   return '<button type="button" class="pick" onclick="elegirPleno(\''+lado+'\',\''+val+'\',this)">'+val+'</button>';
 }
 
-/* ---------- seleccion ---------- */
 function elegir(id,val,btn){
   sel[id] = val;
   btn.parentNode.querySelectorAll(".pick").forEach(b=>b.classList.remove("selected"));
@@ -419,18 +277,15 @@ function actualizarContador(){
   $("contadorPleno").textContent = (plenoLocal?1:0)+(plenoVisit?1:0);
 }
 
-/* ---------- enviar voto ---------- */
 async function enviarVoto(){
   const usuario = $("usuario").value;
   if(!usuario){ toast("Primero elige tu nombre arriba.", "err"); return; }
   if(!votacionAbierta){ toast("Las votaciones están cerradas.", "err"); return; }
 
-  // marcar y contar los que faltan
   let faltan = 0;
   for(let i=1;i<=14;i++){
     const row = document.querySelector('.match[data-id="'+i+'"]');
-    if(!sel[i]){ row.classList.add("falta"); faltan++; }
-    else row.classList.remove("falta");
+    if(!sel[i]){ row.classList.add("falta"); faltan++; } else row.classList.remove("falta");
   }
   if(faltan>0){ toast("Te faltan "+faltan+" partido(s) por marcar.", "err"); return; }
   if(!plenoLocal || !plenoVisit){ toast("Completa el Pleno al 15 (local y visitante).", "err"); return; }
@@ -444,18 +299,11 @@ async function enviarVoto(){
   $("btnEnviar").disabled = true;
   try{
     const resp = await apiText("?"+params.toString());
-    if(resp.indexOf("OK")===0 || resp==="OK"){
-      toast("¡Quiniela enviada! Suerte 🍀", "ok");
-    }else{
-      toast(resp, "err");
-      $("btnEnviar").disabled = false;
-    }
-  }catch(e){
-    $("btnEnviar").disabled = false;
-  }
+    if(resp.indexOf("OK")===0){ toast("¡Quiniela enviada! Suerte 🍀", "ok"); }
+    else{ toast(resp, "err"); $("btnEnviar").disabled = false; }
+  }catch(e){ $("btnEnviar").disabled = false; }
 }
 
-/* ---------- ultima jornada ---------- */
 async function cargarUltima(){
   const c = $("ultimaContenido");
   c.innerHTML = '<div class="vacio">Cargando…</div>';
@@ -471,17 +319,16 @@ async function cargarUltima(){
   }catch(e){ c.innerHTML = '<div class="vacio">No se pudo cargar.</div>'; }
 }
 
-/* ---------- historico ---------- */
 async function cargarHistorico(){
   try{
     const data = await apiJson("?action=historico");
-    const sel = $("selectorJornada");
-    if(!data.length){ $("historicoContenido").innerHTML = '<div class="vacio">No hay jornadas guardadas todavía.</div>'; sel.innerHTML=""; return; }
+    const s = $("selectorJornada");
+    if(!data.length){ $("historicoContenido").innerHTML = '<div class="vacio">No hay jornadas guardadas todavía.</div>'; s.innerHTML=""; return; }
     const jornadas = [...new Set(data.map(r=>r[0]))];
-    sel.innerHTML = "";
-    jornadas.forEach(j=> sel.innerHTML += '<option value="'+j+'">Jornada '+j+'</option>');
-    sel.onchange = ()=>mostrarJornada(data);
-    sel.onchange();
+    s.innerHTML = "";
+    jornadas.forEach(j=> s.innerHTML += '<option value="'+j+'">Jornada '+j+'</option>');
+    s.onchange = ()=>mostrarJornada(data);
+    s.onchange();
   }catch(e){ $("historicoContenido").innerHTML = '<div class="vacio">No se pudo cargar.</div>'; }
 }
 function mostrarJornada(data){
@@ -497,7 +344,6 @@ function mostrarJornada(data){
   $("historicoContenido").innerHTML = html;
 }
 
-/* ---------- clasificacion ---------- */
 async function cargarClasificacion(){
   const c = $("tablaClasificacion");
   c.innerHTML = '<div class="vacio">Cargando…</div>';
@@ -515,7 +361,6 @@ async function cargarClasificacion(){
   }catch(e){ c.innerHTML = '<div class="vacio">No se pudo cargar.</div>'; }
 }
 
-/* ---------- render compartido ---------- */
 function tablaVotos(votos, nombres){
   const usuarios = Object.keys(votos);
   let html = "<table><tr><th>Partido</th>";
@@ -552,26 +397,33 @@ function cajaPleno(p){
     "<div class='pleno-row'><div>"+p.visitanteNombre+"</div><div style='text-align:right;font-weight:600'>"+p.visitanteResultado+"</div></div></div>";
 }
 
-/* ---------- estado ---------- */
 async function cargarEstado(){
   try{
     const d = await apiJson("?action=estado");
     const pill = $("estadoPill");
     const abierta = String(d.estado).trim().toLowerCase()==="abierta";
     votacionAbierta = abierta;
-    if(abierta){
-      pill.textContent = "🟢 Votaciones abiertas";
-      pill.className = "estado-pill abierta";
-    }else{
-      pill.textContent = "🔒 Votaciones cerradas";
-      pill.className = "estado-pill cerrada";
-    }
+    if(abierta){ pill.textContent = "🟢 Votaciones abiertas"; pill.className = "estado-pill abierta"; }
+    else{ pill.textContent = "🔒 Votaciones cerradas"; pill.className = "estado-pill cerrada"; }
     $("btnEnviar").disabled = !abierta;
   }catch(e){}
 }
 
 /* ---------- admin ---------- */
 function toggleAdmin(){ $("adminPanel").classList.toggle("open"); }
+
+async function importarResultadosAdmin(){
+  const pin = $("adminPin").value;
+  if(!pin){ toast("Escribe el PIN de administrador.", "err"); return; }
+  $("importInfo").textContent = "";
+  try{
+    const d = await apiJson("?action=importarResultados&pin="+encodeURIComponent(pin));
+    toast(d.mensaje || "Hecho.", d.ok ? "ok" : "err");
+    if(d.ok){
+      $("importInfo").textContent = "Signos 1-14: " + d.signos.join("  ") + "   ·   Pleno: " + d.pleno + ". Revísalos y luego cierra la jornada.";
+    }
+  }catch(e){}
+}
 
 async function cerrarVotacionesAdmin(){
   const pin = $("adminPin").value;
