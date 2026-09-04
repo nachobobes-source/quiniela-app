@@ -167,6 +167,7 @@ footer{text-align:center;padding:22px;font-size:12px;color:var(--muted);}
     <button class="admin-toggle" onclick="toggleAdmin()">⚙ Administración</button>
     <div id="adminPanel" class="admin-panel">
       <input id="adminPin" type="password" placeholder="PIN de administrador" autocomplete="off">
+      <button class="btn secundario" onclick="importarPartidosAdmin()">Importar partidos (SELAE)</button>
       <button class="btn secundario" onclick="importarResultadosAdmin()">Importar resultados (API)</button>
       <div id="importInfo"></div>
       <button class="btn secundario" onclick="cerrarVotacionesAdmin()">Cerrar votaciones</button>
@@ -411,6 +412,18 @@ async function cargarEstado(){
 
 /* ---------- admin ---------- */
 function toggleAdmin(){ $("adminPanel").classList.toggle("open"); }
+
+async function importarPartidosAdmin(){
+  const pin = $("adminPin").value;
+  if(!pin){ toast("Escribe el PIN de administrador.", "err"); return; }
+  $("importInfo").textContent = "";
+  try{
+    const d = await apiJson("?action=importarPartidos&pin="+encodeURIComponent(pin));
+    toast(d.mensaje || "Hecho.", d.ok ? "ok" : "err");
+    if(d.ok && d.preview){ $("importInfo").innerHTML = d.preview.join("<br>"); }
+    else if(d.raw){ $("importInfo").textContent = d.raw; }
+  }catch(e){}
+}
 
 async function importarResultadosAdmin(){
   const pin = $("adminPin").value;
