@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://script.google.com/macros/s/AKfycbzlzmF4KrP6h2wqMTIWC_I2dkzbEXIZHnoUzwaNkuPlcqz06wBsT4LybRg6hFvasVHN/exec">
 
 <style>
 :root{
@@ -99,6 +99,7 @@ select:focus-visible,input:focus-visible{outline:3px solid rgba(14,78,168,.35);o
 .dot.rojo{background:var(--rojo);}
 .match.falta{background:rgba(216,35,42,.06);box-shadow:inset 3px 0 0 var(--rojo);}
 .match.falta .teams{color:var(--rojo);}
+.match.hecho{box-shadow:inset 3px 0 0 var(--azul);}
 
 .picks{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
 .pick{font-family:'Oswald',sans-serif;font-weight:700;font-size:17px;color:var(--ink);
@@ -205,13 +206,13 @@ footer .cx{color:var(--oro);font-weight:700;}
         </svg>
         <div class="brand">
           <span class="l2">La quiniela</span>
-          <span class="l1">de la peña astur</span>
+          <span class="l1">de la peña</span>
         </div>
       </div>
       <span id="stamp" class="stamp neutro">···</span>
     </div>
     <div class="pitch-rule"></div>
-    <p class="tagline">Del Tartiere a El Molinón, aquí cabemos todos.</p>
+    <p class="tagline">Del Carlos Tartiere a El Molinón.</p>
   </div>
 
   <div class="who">
@@ -279,13 +280,13 @@ footer .cx{color:var(--oro);font-weight:700;}
     </div>
   </div>
 
-  <footer><span class="cx">✚</span> Peña astur · ¡puxa!</footer>
+  <footer><span class="cx">✚</span> La quiniela de la peña</footer>
 </div>
 
 <div id="toast"></div>
 
 <script>
-const URL="https://script.google.com/macros/s/AKfycbzrkGGh1vdDF69Rh0uMIXfdwO4foONaP6S-Q9Tz0KGln-Y4d15uSOZxJUHK-FdyWXDx/exec";
+const URL="https://script.google.com/macros/s/AKfycbzgdxD_rMynis_z21pFiz9q1i7THxoeXv8PHtVaEMoNP4o53_sk5J7-hubQb4M9EfHI/exec";
 
 const sel = {};
 let plL = "", plV = "", abierta = false;
@@ -333,8 +334,13 @@ function equipos(nombre){
   return ladoDot(s)+s;
 }
 
-apiJson("?action=usuarios").then(u=>{
-  const s=$("usuario"); u.forEach(n=> s.innerHTML+='<option>'+n+'</option>');
+Promise.all([
+  apiJson("?action=usuarios"),
+  apiJson("?action=votantes")
+]).then(([u, votaron])=>{
+  const s=$("usuario");
+  const yaVotaron = new Set(votaron || []);
+  u.filter(n=> !yaVotaron.has(n)).forEach(n=> s.innerHTML+='<option>'+n+'</option>');
 }).catch(()=>{});
 
 apiJson("?action=partidos").then(p=>{
@@ -361,7 +367,7 @@ function plB(l,v){ return '<button type="button" class="pick" onclick="elegirPle
 function elegir(id,v,btn){
   sel[id]=v;
   btn.parentNode.querySelectorAll(".pick").forEach(b=>b.classList.remove("on"));
-  btn.classList.add("on"); btn.closest(".match").classList.remove("falta"); cont();
+  btn.classList.add("on"); btn.closest(".match").classList.remove("falta"); btn.closest(".match").classList.add("hecho"); cont();
 }
 function elegirPleno(l,v,btn){
   if(l==="L") plL=v; else plV=v;
@@ -393,7 +399,14 @@ async function enviarVoto(){
   $("enviar").disabled=true;
   try{
     const resp=await apiText("?"+q.toString());
-    if(resp.indexOf("OK")===0){ toast("Quiniela enviada. ¡Puxa y suerte!","ok"); }
+    if(resp.indexOf("OK")===0){
+      toast("Quiniela enviada. ¡Suerte!","ok");
+      // quitar el nombre del desplegable: ya ha votado
+      const s=$("usuario");
+      const op=[...s.options].find(o=>o.value===usuario);
+      if(op) op.remove();
+      s.value="";
+    }
     else{ toast(resp,"err"); $("enviar").disabled=false; }
   }catch(e){ $("enviar").disabled=false; }
 }
