@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://script.google.com/macros/s/AKfycbzlzmF4KrP6h2wqMTIWC_I2dkzbEXIZHnoUzwaNkuPlcqz06wBsT4LybRg6hFvasVHN/exec">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -342,9 +342,10 @@ function pintarUsuarios(){
   s.innerHTML='<option value="">Elige tu nombre</option>';
   listaUsuarios.filter(n=> !yaVotaron.has(n)).forEach(n=> s.innerHTML+='<option>'+n+'</option>');
 }
-// La lista se pinta siempre, aunque falle lo de ocultar votantes.
+// La lista se pinta siempre. Lo de ocultar votantes es opcional y silencioso:
+// si el backend aún no tiene esa acción, no muestra ningún error.
 apiJson("?action=usuarios").then(u=>{ listaUsuarios=u; pintarUsuarios(); }).catch(()=>{});
-apiJson("?action=votantes").then(v=>{ yaVotaron=new Set(v||[]); pintarUsuarios(); }).catch(()=>{});
+fetch(URL+"?action=votantes").then(r=>r.json()).then(v=>{ yaVotaron=new Set(v||[]); pintarUsuarios(); }).catch(()=>{});
 
 apiJson("?action=partidos").then(p=>{
   const c=$("partidos"); c.innerHTML="";
