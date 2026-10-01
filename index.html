@@ -334,14 +334,17 @@ function equipos(nombre){
   return ladoDot(s)+s;
 }
 
-Promise.all([
-  apiJson("?action=usuarios"),
-  apiJson("?action=votantes")
-]).then(([u, votaron])=>{
+let listaUsuarios = null;
+let yaVotaron = new Set();
+function pintarUsuarios(){
+  if(!listaUsuarios) return;
   const s=$("usuario");
-  const yaVotaron = new Set(votaron || []);
-  u.filter(n=> !yaVotaron.has(n)).forEach(n=> s.innerHTML+='<option>'+n+'</option>');
-}).catch(()=>{});
+  s.innerHTML='<option value="">Elige tu nombre</option>';
+  listaUsuarios.filter(n=> !yaVotaron.has(n)).forEach(n=> s.innerHTML+='<option>'+n+'</option>');
+}
+// La lista se pinta siempre, aunque falle lo de ocultar votantes.
+apiJson("?action=usuarios").then(u=>{ listaUsuarios=u; pintarUsuarios(); }).catch(()=>{});
+apiJson("?action=votantes").then(v=>{ yaVotaron=new Set(v||[]); pintarUsuarios(); }).catch(()=>{});
 
 apiJson("?action=partidos").then(p=>{
   const c=$("partidos"); c.innerHTML="";
